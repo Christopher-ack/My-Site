@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updated": "2026-08-26T14:26:57.373Z",
+  "updated": "2026-08-27T16:27:51.130Z",
   "categories": [
     {
       "id": "resources",
@@ -15,53 +15,13 @@
   ],
   "links": [
     {
-      "id": "lmta6g0nh",
-      "title": "Ignite Docs",
-      "url": "https://stratuslive.sharepoint.com/sites/StratusLIVECRM/Shared%20Documents/Forms/AllItems.aspx?id=%2Fsites%2FStratusLIVECRM%2FShared%20Documents%2FCRM%20Pro%20and%20Finance%20App%2FCRM%20Pro%20Docs&viewid=c6a5774c%2D053b%2D44d2%2D9bde%2D5924552513a6&FolderCTID=0x012000AF1AB9BDFEFB2A42869A1053ABC9A96D",
-      "cats": [
-        "resources"
-      ],
-      "desc": "Ignite SharePoint docs",
-      "fav": true
-    },
-    {
-      "id": "lmta6i8tx",
-      "title": "Ignite Messaging",
-      "url": "https://stratuslive-my.sharepoint.com/shared?listurl=https%3A%2F%2Fstratuslive%2Dmy%2Esharepoint%2Ecom%2Fpersonal%2Fdebbie%5Fsnyder%5Fstratuslive%5Fcom%2FDocuments&id=%2Fpersonal%2Fdebbie%5Fsnyder%5Fstratuslive%5Fcom%2FDocuments%2FMicrosoft%20Teams%20Chat%20Files%2FStratusLIVE%5FIgnite%5FMessaging%5FVisualizations%5Fv5%5F1%2Ehtml&parent=%2Fpersonal%2Fdebbie%5Fsnyder%5Fstratuslive%5Fcom%2FDocuments%2FMicrosoft%20Teams%20Chat%20Files&ct=1786452988528&or=Teams%2DHL&shareLink=1%2C1%2C1&ga=1&LOF=1",
-      "cats": [
-        "resources"
-      ],
-      "desc": "Ignite messaging page",
-      "fav": false
-    },
-    {
-      "id": "lmta6j95w",
-      "title": "Hubspot",
-      "url": "https://app.hubspot.com/reports-dashboard/5652497/view/10611264",
-      "cats": [
-        "apps"
-      ],
-      "desc": "Hubspot dashboard",
-      "fav": true
-    },
-    {
-      "id": "lmta6lfd6",
-      "title": "PRDs",
-      "url": "https://app.notion.com/p/dd256d2d06d6471692d8e3a5a4deccda?v=3ae07cb0a8274e909cd8d5bb5a7303c0",
+      "id": "lmtbqkhh3",
+      "title": "Google",
+      "url": "https://google.com",
       "cats": [
         "resources"
       ],
       "desc": "",
-      "fav": false
-    },
-    {
-      "id": "lmta6s3hp",
-      "title": "Ignite QA",
-      "url": "https://testplatform.stratuslive.com/organizations/4-h",
-      "cats": [
-        "apps"
-      ],
-      "desc": "Ignite QA environment",
       "fav": true
     }
   ]
