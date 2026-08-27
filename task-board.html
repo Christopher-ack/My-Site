@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<title>Task Board — My Site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Design system + page styles, then the nav bar, then this page. -->
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site-nav.css">
+<link rel="stylesheet" href="tasks.css">
+</head>
+<body>
+
+<!-- The nav builds itself from site-nav.js. Same two lines on every page. -->
+<div id="nav-mount"></div>
+
+<div class="page page-wide">
+  <header class="page-header">
+    <h1>Task Board</h1>
+    <p class="tagline">Manage tasks</p>
+  </header>
+
+  <div class="task-head">
+    <div class="task-head-left">
+      <span class="label-caps">Board</span>
+      <span class="count-label" id="count"></span>
+    </div>
+
+    <div class="task-head-right">
+      <!-- Dot is lit only when the page and the file agree. -->
+      <div class="data-pill">
+        <span class="dot" id="dataDot"></span>
+        <span class="data-label" id="dataLabel">Loading…</span>
+        <button class="fmt-btn" type="button" id="downloadBtn">Download</button>
+      </div>
+      <a class="btn btn-small btn-link" href="tasks-all.html">View list</a>
+      <button class="btn-primary btn-small" type="button" id="addBtn">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Add task
+      </button>
+    </div>
+  </div>
+
+  <!-- Columns are built from the file's statuses, not from this markup. -->
+  <div class="kanban" id="board"></div>
+
+  <div class="empty-state" id="emptyState">
+    <strong>Nothing to show</strong>
+    <span>Add your first task.</span>
+  </div>
+</div>
+
+<!-- One modal, reused by every card. Always opens in edit mode. -->
+<div class="modal-overlay" id="overlay">
+  <div class="modal-box task-modal" id="modalBox" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 class="modal-title" id="modalTitle">Add task</h2>
+
+    <div class="field">
+      <label class="modal-label" for="fTitle">Title</label>
+      <input type="text" id="fTitle" class="input" placeholder="What needs done" autocomplete="off" />
+    </div>
+
+    <div class="field">
+      <label class="modal-label" for="fDesc">Description</label>
+      <textarea id="fDesc" class="input input-area" rows="3" placeholder="A line or two of context, shown on the card"></textarea>
+    </div>
+
+    <div class="field">
+      <label class="modal-label" for="fDue">Due date</label>
+      <div class="due-field">
+        <input type="date" id="fDue" class="input input-date" />
+        <button class="btn btn-small" type="button" id="clearDue">Clear</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="modal-label">Priority</label>
+      <div class="cat-picker" id="fPriority"></div>
+    </div>
+
+    <div class="field">
+      <label class="modal-label">Status</label>
+      <div class="cat-picker" id="fStatus"></div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-danger" type="button" id="deleteBtn" hidden>Delete</button>
+      <span class="modal-actions-spacer"></span>
+      <button class="btn" type="button" id="cancelBtn">Cancel</button>
+      <button class="btn-primary" type="button" id="saveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Save status toast -->
+<div class="toast" id="toast"><span class="toast-dot"></span><span id="toastText"></span></div>
+
+<script src="site-nav.js"></script>
+<script src="tasks-store.js"></script>
+<script src="task-board.js"></script>
+</body>
+</html>

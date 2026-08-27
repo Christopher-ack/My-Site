@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<title>Scripts — My Site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Design system, then the nav bar, then Demos (this page borrows its
+     script panel, its rich text and its print rules), then this page. -->
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site-nav.css">
+<link rel="stylesheet" href="demos.css">
+<link rel="stylesheet" href="demo-scripts.css">
+</head>
+<body>
+
+<!-- The nav builds itself from site-nav.js. Same two lines on every page. -->
+<div id="nav-mount"></div>
+
+<div class="page">
+  <header class="page-header">
+    <h1>Scripts</h1>
+    <p class="tagline">Previous and favorite demo scripts.</p>
+  </header>
+
+  <!-- Favorites. Hidden until something is hearted, so the page opens
+       as a plain table and grows a shelf only when it's earned one. -->
+  <section class="fav-section" id="favSection" hidden>
+    <div class="fav-head">
+      <span class="label-caps">Favorites</span>
+      <span class="count-label" id="favCount"></span>
+    </div>
+    <div class="fav-grid" id="favGrid"></div>
+  </section>
+
+  <div class="list-head">
+    <div class="list-head-left">
+      <span class="label-caps">All scripts</span>
+      <span class="count-label" id="count"></span>
+    </div>
+
+    <div class="list-head-right">
+      <!-- Dot is lit only when the page and the file agree. -->
+      <div class="data-pill">
+        <span class="dot" id="dataDot"></span>
+        <span class="data-label" id="dataLabel">Loading…</span>
+        <button class="fmt-btn" type="button" id="downloadBtn">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-bar-left">
+      <div class="popover-wrap">
+        <button class="control-btn" type="button" id="catBtn" aria-haspopup="true" aria-expanded="false">
+          <span id="catBtnLabel">Categories</span><span class="chevron"></span>
+        </button>
+        <div class="dropdown" id="catDrop"></div>
+      </div>
+
+      <div class="search-control">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="search-input" id="search" placeholder="Search name, description, category, demo…" autocomplete="off" />
+      </div>
+    </div>
+
+    <!-- Scripts are built in the builder, so the button goes there. -->
+    <a class="btn-primary btn-small btn-link" href="demos.html">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Build a script
+    </a>
+  </div>
+
+  <div class="card card-accent">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:38%">
+            <button class="sort-header active" type="button" data-sort="title">Script<span class="sort-arrow"></span></button>
+          </th>
+          <th style="width:24%" class="col-hide-sm"><span class="header-label">Categories</span></th>
+          <th style="width:15%" class="col-hide-sm"><span class="header-label">Demos</span></th>
+          <th style="width:15%" class="col-hide-sm">
+            <button class="sort-header" type="button" data-sort="updated">Updated<span class="sort-arrow"></span></button>
+          </th>
+          <th style="width:4%"></th>
+          <th style="width:4%"></th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+
+    <div class="empty-state" id="emptyState">
+      <strong>Nothing to show</strong>
+      <span>Clear the filters, or build a script on the Demos page and save it.</span>
+    </div>
+  </div>
+</div>
+
+<!-- Name, categories, description. The running order itself is edited
+     in the builder, not here. -->
+<div class="modal-overlay" id="overlay">
+  <div class="modal-box modal-box-large script-meta-modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 class="modal-title" id="modalTitle">Edit script</h2>
+
+    <div class="field">
+      <label class="modal-label" for="fName">Name</label>
+      <input type="text" id="fName" class="input" placeholder="The name of the script" autocomplete="off" />
+    </div>
+
+    <div class="field">
+      <label class="modal-label">Categories</label>
+      <div class="option-grid" id="fCats"></div>
+      <div class="inline-add-row">
+        <input class="input input-small" type="text" id="fNewCat" placeholder="Add a new category…" autocomplete="off" />
+        <button class="btn btn-small" type="button" id="addCatBtn">Add</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="modal-label" for="fDesc">Description</label>
+      <input type="text" id="fDesc" class="input" placeholder="A short description of the script" autocomplete="off" />
+    </div>
+
+    <div class="modal-toggle-row">
+      <div class="modal-toggle-item">
+        <button class="switch" type="button" role="switch" aria-checked="false" id="fFav"></button>
+        <span>Favorite</span>
+      </div>
+    </div>
+
+    <p class="hint" id="fSummary"></p>
+
+    <div class="modal-actions">
+      <button class="btn btn-danger" type="button" id="deleteBtn">Delete</button>
+      <span class="modal-actions-spacer"></span>
+      <button class="btn" type="button" id="cancelBtn">Cancel</button>
+      <button class="btn-primary" type="button" id="saveBtn">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- The script, read only. Same panel as the Demos page, same output. -->
+<div class="modal-overlay" id="scriptOverlay">
+  <div class="modal-box demo-modal script-modal" role="dialog" aria-modal="true" aria-labelledby="scriptTitle">
+
+    <header class="demo-modal-head">
+      <div class="demo-modal-top">
+        <span class="label-caps" style="margin:0">Script</span>
+        <button class="icon-btn" id="scriptClose" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+        </button>
+      </div>
+      <h2 class="modal-title" id="scriptTitle">Full script</h2>
+      <p class="demo-modal-desc" id="scriptMeta"></p>
+    </header>
+
+    <div class="demo-modal-body" id="scriptScroll">
+      <div class="modal-pad">
+        <div class="script-doc rich" id="scriptDoc"></div>
+      </div>
+    </div>
+
+    <footer class="demo-modal-foot">
+      <div class="foot-left">
+        <button class="btn" type="button" id="pdfBtnModal">Export to PDF</button>
+        <button class="btn" type="button" id="copyLinkBtn">Copy link</button>
+      </div>
+      <div class="foot-right">
+        <a class="btn btn-link" id="editOnDemos" href="demos.html">Edit script</a>
+        <button class="btn-primary" type="button" id="scriptDone">Done</button>
+      </div>
+    </footer>
+
+  </div>
+</div>
+
+<!-- Filled just before printing. Off-screen everywhere except on paper. -->
+<div id="printRoot" aria-hidden="true"></div>
+
+<!-- One menu panel, positioned in JS, reused by every row. -->
+<div class="menu-panel" id="rowMenu" role="menu" aria-label="Script actions">
+  <button class="menu-item" type="button" role="menuitem" data-act="edit">Edit script</button>
+  <button class="menu-item" type="button" role="menuitem" data-act="view">View script</button>
+  <button class="menu-item" type="button" role="menuitem" data-act="meta">Edit name and categories</button>
+  <button class="menu-item" type="button" role="menuitem" data-act="duplicate">Duplicate</button>
+  <button class="menu-item" type="button" role="menuitem" data-act="link">Copy link</button>
+  <div class="menu-divider"></div>
+  <button class="menu-item" type="button" role="menuitem" data-act="fav">Add to favorites</button>
+  <button class="menu-item menu-item-danger" type="button" role="menuitem" data-act="delete">Delete script</button>
+</div>
+
+<!-- Save status toast -->
+<div class="toast" id="toast"><span class="toast-dot"></span><span id="toastText"></span></div>
+
+<script src="site-nav.js"></script>
+<script src="demo-scripts.js"></script>
+</body>
+</html>

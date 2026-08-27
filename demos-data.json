@@ -1,0 +1,160 @@
+{
+  "version": 1,
+  "updated": "2026-08-27T14:44:36.000Z",
+  "categories": [
+    {
+      "id": "crm",
+      "label": "CRM",
+      "color": "#22d3ee"
+    },
+    {
+      "id": "finance",
+      "label": "Finance",
+      "color": "#34d399"
+    },
+    {
+      "id": "fundraising",
+      "label": "Fundraising",
+      "color": "#f472b6"
+    },
+    {
+      "id": "marketing",
+      "label": "Marketing",
+      "color": "#f97316"
+    },
+    {
+      "id": "engagement",
+      "label": "Engagement",
+      "color": "#fbbf24"
+    },
+    {
+      "id": "partnerships",
+      "label": "Partnerships",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "intelligence",
+      "label": "Intelligence",
+      "color": "#38bdf8"
+    },
+    {
+      "id": "self-service",
+      "label": "Self-Service",
+      "color": "#a3e635"
+    }
+  ],
+  "personas": [
+    {
+      "id": "fundraiser",
+      "label": "Fundraiser",
+      "color": "#e879f9"
+    },
+    {
+      "id": "marketer",
+      "label": "Marketer",
+      "color": "#2dd4bf"
+    }
+  ],
+  "demos": [
+    {
+      "id": "dtest01",
+      "cat": "crm",
+      "persona": "fundraiser",
+      "title": "Test 01",
+      "desc": "Test description",
+      "mins": 10,
+      "tags": [
+        "test",
+        "sample"
+      ],
+      "body": "<p>Test description</p>"
+    },
+    {
+      "id": "dtest02",
+      "cat": "finance",
+      "persona": "marketer",
+      "title": "Test 02",
+      "desc": "Test description",
+      "mins": 15,
+      "tags": [
+        "test"
+      ],
+      "body": "<p>Test description</p>"
+    },
+    {
+      "id": "dtest03",
+      "cat": "fundraising",
+      "persona": "fundraiser",
+      "title": "Test 03",
+      "desc": "Test description",
+      "mins": 20,
+      "tags": [
+        "test",
+        "sample"
+      ],
+      "body": "<p>Test description</p>"
+    },
+    {
+      "id": "dtest04",
+      "cat": "marketing",
+      "persona": "marketer",
+      "title": "Test 04",
+      "desc": "Test description",
+      "mins": 5,
+      "tags": [
+        "test"
+      ],
+      "body": "<p>Test description</p>"
+    },
+    {
+      "id": "dtest05",
+      "cat": "engagement",
+      "persona": "fundraiser",
+      "title": "Test 05",
+      "desc": "Test description",
+      "mins": 10,
+      "tags": [
+        "test",
+        "sample"
+      ],
+      "body": "<p>Test description</p>"
+    },
+    {
+      "id": "dtest06",
+      "cat": "partnerships",
+      "persona": "marketer",
+      "title": "Test 06",
+      "desc": "Test description",
+      "mins": 15,
+      "tags": [
+        "test"
+      ],
+      "body": "<p>Test description</p>"
+    },
+    {
+      "id": "dtest07",
+      "cat": "intelligence",
+      "persona": "fundraiser",
+      "title": "Test 07",
+      "desc": "Test description",
+      "mins": 20,
+      "tags": [
+        "test",
+        "sample"
+      ],
+      "body": "<p>Test description</p>"
+    },
+    {
+      "id": "dtest08",
+      "cat": "self-service",
+      "persona": "marketer",
+      "title": "Test 08",
+      "desc": "Test description",
+      "mins": 5,
+      "tags": [
+        "test"
+      ],
+      "body": "<p>Test description</p>"
+    }
+  ]
+}

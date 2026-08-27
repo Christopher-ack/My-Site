@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<title>Knowledge Base — My Site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Design system, then the nav bar, then Demos (this page borrows its
+     rich text, its editor toolbar and its print rules), then this page. -->
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site-nav.css">
+<link rel="stylesheet" href="demos.css">
+<link rel="stylesheet" href="kb.css">
+</head>
+<body>
+
+<!-- The nav builds itself from site-nav.js. Same two lines on every page. -->
+<div id="nav-mount"></div>
+
+<div class="page page-wide">
+  <header class="page-header">
+    <h1>Knowledge Base</h1>
+    <p class="tagline">Folders, pages, and the links between them.</p>
+  </header>
+
+  <div class="kb-head">
+    <div class="kb-head-left">
+      <span class="label-caps">All pages</span>
+      <span class="count-label" id="count"></span>
+    </div>
+
+    <div class="kb-head-right">
+      <!-- Dot is lit only when the page and the file agree. -->
+      <div class="data-pill">
+        <span class="dot" id="dataDot"></span>
+        <span class="data-label" id="dataLabel">Loading…</span>
+        <button class="fmt-btn" type="button" id="downloadBtn">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="kb-shell">
+
+    <!-- Rail one: folders -->
+    <aside class="kb-rail card" aria-label="Folders">
+      <div class="kb-rail-head">
+        <span class="label-caps">Folders</span>
+        <button class="icon-btn kb-add" type="button" id="newFolderBtn" aria-label="New folder" title="New folder">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+
+      <div class="kb-list" id="folderList"></div>
+
+      <div class="kb-rail-add" id="newFolderRow" hidden>
+        <input class="input input-small" type="text" id="newFolderName" placeholder="Folder name…" autocomplete="off" />
+      </div>
+    </aside>
+
+    <!-- The pages rail and the page itself share one surface, joined by a
+         single divider, so the list reads as part of what it opens rather
+         than as a separate box beside it. -->
+    <div class="kb-main card card-accent">
+
+    <!-- Rail two: the pages inside the chosen folder, or search hits from
+         everywhere, because a name you half-remember isn't filed anywhere. -->
+    <aside class="kb-rail kb-rail-joined" aria-label="Pages">
+      <div class="kb-rail-inner">
+      <div class="kb-rail-head">
+        <span class="label-caps" id="pagesHead">Pages</span>
+        <button class="icon-btn kb-add" type="button" id="newPageBtn" aria-label="New page" title="New page">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+
+      <div class="kb-rail-search">
+        <div class="search-control">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="text" class="search-input" id="search" placeholder="Search every page…" autocomplete="off" />
+        </div>
+      </div>
+
+      <div class="kb-list" id="pageList"></div>
+      </div>
+    </aside>
+
+    <!-- The page itself -->
+    <section class="kb-doc" aria-label="Page">
+
+      <header class="kb-doc-head" id="docHead" hidden>
+        <div class="kb-doc-top">
+          <span class="kb-crumb" id="crumb"></span>
+          <div class="kb-doc-actions">
+            <button class="btn btn-small" type="button" id="editBtn">Edit</button>
+            <button class="btn btn-small" type="button" id="cancelBtn" hidden>Cancel</button>
+            <button class="btn-primary btn-small" type="button" id="saveBtn" hidden>Save</button>
+            <button class="icon-btn" type="button" id="pageMenuBtn" aria-haspopup="true" aria-expanded="false" aria-label="More actions">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <h2 class="kb-doc-title" id="docTitle">Untitled page</h2>
+        <input class="kb-title-input" type="text" id="titleInput" placeholder="Page title" autocomplete="off" hidden />
+
+        <div class="kb-doc-meta">
+          <span id="docMeta"></span>
+          <label class="kb-move" id="moveRow" hidden>
+            <span>Folder</span>
+            <select class="input input-small" id="fFolder"></select>
+          </label>
+        </div>
+      </header>
+
+      <!-- Edit mode only: formatting controls, stuck to the top of the scroll area -->
+      <div class="editor-toolbar kb-toolbar" id="toolbar" hidden>
+        <button class="fmt-btn" type="button" data-cmd="bold" title="Bold" style="font-weight:700">B</button>
+        <button class="fmt-btn" type="button" data-cmd="italic" title="Italic" style="font-style:italic;font-family:Georgia,serif">I</button>
+        <button class="fmt-btn" type="button" data-cmd="heading" title="Heading">Heading</button>
+        <span class="fmt-divider"></span>
+        <button class="fmt-btn" type="button" data-cmd="insertUnorderedList" title="Bulleted list">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="4" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.4" fill="currentColor" stroke="none"/><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/></svg>
+          Bullets
+        </button>
+        <button class="fmt-btn" type="button" data-cmd="insertOrderedList" title="Numbered list">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="10" y1="6" x2="20" y2="6"/><line x1="10" y1="12" x2="20" y2="12"/><line x1="10" y1="18" x2="20" y2="18"/><path d="M4 4.6h1.4V8M3.4 11.4h2.4L3.4 15h2.6M3.6 18h2.2v3H3.6z" stroke-width="1.6"/></svg>
+          Numbers
+        </button>
+        <span class="fmt-divider"></span>
+        <button class="fmt-btn" type="button" data-cmd="link" title="Link to a web address">Link</button>
+        <button class="fmt-btn" type="button" data-cmd="page" title="Link to another page — or just type @">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h4a2 2 0 0 1 2 2v4"/><path d="M10 20H6a2 2 0 0 1-2-2v-4"/><path d="M9 15l6-6"/></svg>
+          Page
+        </button>
+        <button class="fmt-btn" type="button" data-cmd="image" title="Insert an image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 16l-5-5-6.5 6.5"/></svg>
+          Image
+        </button>
+        <button class="fmt-btn" type="button" data-cmd="removeFormat" title="Clear formatting">Clear</button>
+        <input type="file" id="imgInput" accept="image/*" hidden>
+      </div>
+
+      <div class="kb-doc-body" id="docScroll">
+        <div class="kb-doc-pad">
+          <div class="doc rich" id="viewer"></div>
+          <div class="editor rich" id="editor" contenteditable="true" spellcheck="true" hidden
+               data-placeholder="Write it up. Type @ to link another page. Headings, lists, links and images all work — paste a screenshot straight in."></div>
+
+          <!-- Who points here. Built by reading every other page, so it can't
+               fall out of step with the links themselves. -->
+          <section class="kb-backlinks" id="backlinks" hidden>
+            <span class="label-caps">Linked from</span>
+            <div class="kb-backlink-list" id="backlinkList"></div>
+          </section>
+        </div>
+      </div>
+
+      <div class="kb-doc-blank" id="docBlank">
+        <strong>Nothing open</strong>
+        <span>Pick a page on the left, or start a new one.</span>
+      </div>
+    </section>
+
+    </div><!-- /kb-main -->
+
+  </div>
+</div>
+
+<!-- The @ picker. Positioned at the caret in JS. -->
+<div class="kb-mention" id="mention" role="listbox" aria-label="Link to a page"></div>
+
+<!-- One menu each, positioned in JS, reused by every row. -->
+<div class="menu-panel" id="pageMenu" role="menu" aria-label="Page actions">
+  <button class="menu-item" type="button" role="menuitem" data-act="edit">Edit page</button>
+  <button class="menu-item" type="button" role="menuitem" data-act="link">Copy link</button>
+  <button class="menu-item" type="button" role="menuitem" data-act="duplicate">Duplicate</button>
+  <div class="menu-divider"></div>
+  <button class="menu-item menu-item-danger" type="button" role="menuitem" data-act="delete">Delete page</button>
+</div>
+
+<div class="menu-panel" id="folderMenu" role="menu" aria-label="Folder actions">
+  <button class="menu-item" type="button" role="menuitem" data-act="rename">Rename folder</button>
+  <button class="menu-item" type="button" role="menuitem" data-act="link">Copy link</button>
+  <div class="menu-divider"></div>
+  <button class="menu-item menu-item-danger" type="button" role="menuitem" data-act="delete">Delete folder</button>
+</div>
+
+<!-- Save status toast -->
+<div class="toast" id="toast"><span class="toast-dot"></span><span id="toastText"></span></div>
+
+<script src="site-nav.js"></script>
+<script src="kb.js"></script>
+</body>
+</html>

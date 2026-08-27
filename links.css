@@ -1,0 +1,195 @@
+/* =========================================================
+   LINKS PAGE
+   Loaded after site.css and site-nav.css. Tokens only —
+   nothing here overrides a design-system component.
+   ========================================================= */
+
+/* Some components below set `display`, which would otherwise out-rank
+   the browser's rule for [hidden]. This page toggles panes and buttons
+   with that attribute, so it has to win. */
+
+/* ---------------------------------------------------------
+   Favorites shelf. Sits above the table, ruled off from it the
+   same way the page header is ruled off from the page.
+--------------------------------------------------------- */
+.fav-section {
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: 26px;
+  margin-bottom: 26px;
+}
+.fav-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.fav-head .label-caps { margin-bottom: 0; }
+.fav-head .count-label { padding-bottom: 0; }
+
+.fav-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 14px;
+}
+
+/* The whole tile is the link. An <a> wearing .card, so hit area,
+   middle-click, and "copy link address" all work for free. */
+.fav-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  text-align: center;
+  min-height: 138px;
+  padding: 30px 22px 26px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color var(--t), background var(--t);
+}
+/* Top hairline carries the first category's color. Solid, not the
+   cyan→green gradient — that stays reserved for the primary card. */
+.fav-tile::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--cat);
+}
+.fav-tile:hover {
+  border-color: var(--border-hover);
+  background: #141d31;
+}
+
+.fav-title {
+  font-family: var(--font-ui);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-strong);
+  overflow-wrap: anywhere;
+}
+.fav-host {
+  font-size: 12.5px;
+  color: var(--text-faint);
+  overflow-wrap: anywhere;
+}
+
+/* Lit, because everything on this shelf is a favorite. Not a button —
+   the tile has one job and clicking anywhere on it does that job. */
+.fav-heart {
+  position: absolute;
+  top: 12px;
+  right: 13px;
+  color: var(--accent-love);
+  display: inline-flex;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent-love) 70%, transparent));
+}
+.fav-heart svg { width: 14px; height: 14px; }
+
+/* ---------------------------------------------------------
+   Head row above the filter bar
+--------------------------------------------------------- */
+.link-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.link-head-left {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.link-head-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.link-head .label-caps { margin-bottom: 0; }
+.link-head .count-label { padding-bottom: 0; }
+
+/* Where the data currently stands. The dot is the only lit thing:
+   green when the file has everything, orange when it doesn't. */
+
+/* Quiet text button, small enough to live inside a pill or a toolbar. */
+
+/* Count on the right of each category row in the dropdown. */
+
+/* Search grows into whatever the categories button leaves behind,
+   with the Add button pinned to the far end of the bar. */
+.filter-bar-left { flex: 1; min-width: 0; }
+.filter-bar-left .search-control { flex: 1; max-width: 420px; }
+
+/* ---------------------------------------------------------
+   Table
+--------------------------------------------------------- */
+/* The title is the link. Underline only on hover, so a table of
+   twenty of them doesn't read as twenty underlines. */
+.link-title {
+  color: var(--text-strong);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color var(--t-fast), border-color var(--t-fast);
+}
+.link-title:hover {
+  color: var(--accent-a);
+  border-bottom-color: color-mix(in srgb, var(--accent-a) 55%, transparent);
+}
+
+/* Sits under the title at the faint step — present, never competing. */
+.link-url {
+  display: block;
+  margin-top: 3px;
+  color: var(--text-faint);
+  font-size: 12.5px;
+  font-weight: 400;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 46ch;
+}
+.link-desc {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+.link-cats { display: flex; flex-wrap: wrap; gap: 0; }
+.link-cats .tag { margin: 2px 5px 2px 0; }
+
+/* Empty state lives inside the card, so the card never collapses. */
+
+/* ---------------------------------------------------------
+   Modal
+--------------------------------------------------------- */
+.link-modal .modal-title { margin-bottom: 22px; }
+.link-modal .option-grid { max-height: 180px; }
+.link-modal .inline-add-row .input { flex: 1; min-width: 0; }
+.link-modal .inline-add-row .btn { flex-shrink: 0; }
+/* The hint belongs to the field, not to the row that was just added. */
+.link-modal .inline-add-row + .hint { margin-top: 8px; }
+
+/* Destructive: quiet until it's armed, then it says what it'll do. */
+
+/* ---------------------------------------------------------
+   Small screens
+--------------------------------------------------------- */
+@media (max-width: 640px) {
+  .fav-grid { grid-template-columns: 1fr; }
+  .link-head { align-items: flex-start; }
+  .filter-bar-left { width: 100%; }
+  .filter-bar-left .search-control { max-width: none; }
+  .link-url { max-width: 100%; }
+}
+
+/* Empty state lives inside the card, so the card never collapses. */
+.card .empty-state { border-top: 1px solid var(--border-soft); }

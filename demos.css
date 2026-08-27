@@ -1,0 +1,715 @@
+/* =========================================================
+   DEMOS PAGE
+   Loaded after site.css and site-nav.css. Uses existing tokens
+   only — nothing here overrides a design-system component.
+   ========================================================= */
+
+/* Several components below set `display`, which would otherwise
+   out-rank the browser's rule for [hidden]. This page toggles
+   panes and buttons with that attribute, so it has to win. */
+
+/* ---- Two-column shell: filter rail + card grid ---- */
+.demos-layout {
+  display: grid;
+  grid-template-columns: 196px minmax(0, 1fr);
+  gap: 36px;
+  align-items: start;
+}
+
+/* ---- Filter rail ---- */
+.filter-rail {
+  position: sticky;
+  top: calc(var(--nav-h) + 24px);
+}
+.filter-rail .label-caps { margin-left: 10px; }
+
+.filter-list {
+  display: grid;
+  gap: 2px;
+  margin-bottom: 14px;
+}
+
+/* A button wearing .option-row. The dot is the control. */
+.filter-row .option-label { flex: 1; }
+.filter-row .filter-count {
+  color: var(--text-faint);
+  font-size: 12px;
+  font-weight: 500;
+}
+.filter-row:has(.dot.on) .option-label,
+.cat-option:has(.dot.on) .option-label { color: var(--text); }
+
+/* ---- Tag filter ---- */
+.tag-filter { margin-top: 22px; }
+.tag-filter-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-left: 10px;
+}
+.tag-filter-head .label-caps { margin-left: 0; }
+
+.tag-clear {
+  background: none;
+  border: none;
+  padding: 0;
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: color var(--t-fast);
+}
+.tag-clear:hover { color: var(--accent-love); }
+
+.tag-filter-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 0 10px;
+}
+
+/* Idle a chip is a quiet outline; lit, it wears its own colour.
+   The colour is hashed from the word, so a tag keeps its hue. */
+.tag-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 9px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-sunken);
+  font-family: var(--font-ui);
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: .2px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: color var(--t-fast), border-color var(--t-fast),
+              background var(--t-fast), box-shadow var(--t-fast);
+}
+.tag-chip:hover {
+  color: var(--text);
+  border-color: var(--border-hover);
+  background: var(--bg-hover);
+}
+.tag-chip.on {
+  color: var(--tag-color);
+  border-color: color-mix(in srgb, var(--tag-color) 55%, transparent);
+  background: color-mix(in srgb, var(--tag-color) 14%, var(--bg-sunken));
+  box-shadow: 0 0 12px -4px var(--tag-color);
+}
+.tag-chip-count {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--text-faint);
+}
+.tag-chip.on .tag-chip-count { color: inherit; opacity: .75; }
+
+/* Nothing under the current module filter carries this tag. Still
+   clickable — it just has nothing to show until a module comes back. */
+.tag-chip.is-empty { opacity: .45; }
+.tag-chip.is-empty:hover { opacity: .75; }
+
+/* Persona chips keep the colour the file gives them, so a persona
+   reads the same in the rail, on a tile and in a script. */
+.persona-chip .tag-chip-label { letter-spacing: .1px; }
+
+/* ---- Persona bubble ---- */
+/* Filled rather than outlined, so it doesn't read as a second module
+   chip. This is the thing that tells two same-titled demos apart. */
+.persona-bubble {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 3px 9px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--tag-color) 45%, transparent);
+  background: color-mix(in srgb, var(--tag-color) 18%, transparent);
+  color: var(--tag-color);
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* Pushes the script-add button back to the right now that the module
+   chip and the bubble share the left. */
+.card-top-spacer { flex: 1; }
+
+/* ---- Grid header ---- */
+.demo-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.demo-head-left {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.demo-head-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.demo-head .label-caps { margin-bottom: 0; }
+.demo-head .count-label { padding-bottom: 0; }
+
+/* Where the data currently stands. The dot is the only lit thing:
+   green when the file has everything, orange when it doesn't. */
+
+/* =========================================================
+   Script builder. Sits above the grid, ruled off from it the
+   same way the page header is ruled off from the page.
+   ========================================================= */
+.script-section {
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: 26px;
+  margin-bottom: 26px;
+}
+.script-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.script-head-left {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.script-head-right { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.script-head .label-caps { margin-bottom: 0; }
+.script-head .count-label { padding-bottom: 0; }
+
+/* Display and Export read the list; neither changes anything, so neither
+   is primary. Save does, so it takes the green — the only lit control
+   in the row. */
+.script-action { font-size: 13px; padding: 8px 14px; white-space: nowrap; }
+.script-action svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+.script-save {
+  color: var(--accent-b);
+  border-color: color-mix(in srgb, var(--accent-b) 45%, transparent);
+  background: color-mix(in srgb, var(--accent-b) 10%, var(--bg-panel));
+}
+.script-save:hover {
+  color: var(--accent-b);
+  border-color: var(--accent-b);
+  background: color-mix(in srgb, var(--accent-b) 16%, var(--bg-panel));
+  box-shadow: 0 0 16px -4px var(--accent-b);
+}
+
+/* Which saved script the builder is standing in. Quiet until it exists. */
+.script-editing {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 3px 4px 3px 12px;
+  max-width: 100%;
+}
+.script-editing-label {
+  color: var(--text-faint);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+.script-editing-name {
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.script-detach { padding: 3px; flex-shrink: 0; }
+.script-detach:hover { color: var(--accent-love); }
+
+/* The summary line sits above the buttons, not beside a field. */
+.save-modal #sSummary { margin: 18px 0 0; }
+.save-modal .option-grid { max-height: 180px; }
+.save-modal .inline-add-row .input { flex: 1; min-width: 0; }
+.save-modal .inline-add-row .btn { flex-shrink: 0; }
+.save-modal .inline-add-row + .hint { margin-top: 8px; }
+
+.script-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-soft);
+  transition: background var(--t-fast), opacity var(--t);
+}
+.script-row:last-child { border-bottom: none; }
+.script-row:hover { background: var(--bg-hover); }
+.script-row:focus-visible {
+  outline: none;
+  background: var(--bg-hover);
+  box-shadow: inset 2px 0 0 var(--accent-a);
+}
+
+/* The handle. Idle it's barely there; it lights on hover like
+   every other icon button on the site. */
+.script-grip {
+  flex-shrink: 0;
+  padding: 2px;
+  margin-left: -4px;
+  color: var(--icon-idle);
+  cursor: grab;
+  touch-action: none;          /* a drag here is a drag, not a scroll */
+}
+.script-grip:hover { color: var(--icon-hover); }
+.script-row.dragging .script-grip { cursor: grabbing; }
+
+/* The original holds its place and dims while the ghost is carried. */
+.script-row.dragging { opacity: .32; }
+
+/* ---- The thing you're actually carrying ---- */
+.script-ghost {
+  position: fixed;
+  z-index: 400;
+  pointer-events: none;
+  margin: 0;
+  cursor: grabbing;
+  border: 1px solid var(--border-hover);
+  border-radius: var(--r-pop);
+  background: var(--bg-panel);
+  box-shadow: var(--shadow-modal);
+  transform: rotate(-.5deg);
+}
+body.dragging-row { cursor: grabbing; user-select: none; }
+
+.script-row-title {
+  color: var(--text-strong);
+  font-size: 15px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.script-row-desc {
+  flex: 1;
+  min-width: 0;
+  color: var(--text-dim);
+  font-size: 13.5px;
+  line-height: 1.6;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.script-row .tag { margin: 0; flex-shrink: 0; }
+.script-row .persona-bubble { margin: 0; }
+.script-row-time {
+  color: var(--text-faint);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.script-menu-btn { flex-shrink: 0; margin-left: 2px; }
+
+/* Runs under the list, right-aligned — a total, where a total goes. */
+.script-total {
+  margin: 10px 2px 0;
+  text-align: right;
+  color: var(--text-faint);
+  font-size: 12.5px;
+}
+.script-total b {
+  color: var(--text-dim);
+  font-weight: 600;
+  margin-left: 6px;
+}
+
+/* Move up / down go dead at the ends of the list rather than disappearing,
+   so the menu keeps the same shape on every row. */
+.menu-item[disabled] { color: var(--icon-idle); cursor: default; }
+.menu-item[disabled]:hover { background: none; color: var(--icon-idle); }
+
+/* ---- Cards ---- */
+.demo-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(236px, 1fr));
+  gap: 14px;
+}
+
+.demo-card {
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px 18px;
+  cursor: pointer;
+  transition: border-color var(--t), background var(--t);
+}
+/* Top hairline carries the category color. Solid, not the
+   cyan→green gradient — that stays reserved for the primary card. */
+.demo-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--cat);
+}
+.demo-card:hover { border-color: var(--border-hover); background: #141d31; }
+.demo-card.hide { display: none; }
+
+/* Category chip on the left, script builder toggle on the right. */
+.demo-card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.demo-card-top .tag { margin: 0; }
+.demo-card-top .persona-bubble { margin: 0; }
+
+/* The only green thing on a card. Turns rose once the demo is in the list. */
+.script-add {
+  flex-shrink: 0;
+  padding: 2px;
+  color: var(--accent-b);
+  opacity: .7;
+  transition: color var(--t), opacity var(--t), filter var(--t);
+}
+.script-add:hover {
+  color: var(--accent-b);
+  opacity: 1;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent-b) 70%, transparent));
+}
+.script-add.on {
+  color: var(--accent-love);
+  opacity: 1;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent-love) 70%, transparent));
+}
+
+.demo-title {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--text-strong);
+  margin: 0 0 8px;
+}
+
+.demo-desc {
+  color: var(--text-dim);
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 0 0 16px;
+}
+
+.demo-tags {
+  margin-top: auto;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-soft);
+  color: var(--text-faint);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.demo-tags:empty { display: none; }
+.demo-tag-sep { margin: 0 5px; opacity: .55; }
+
+/* A tag that matched the filter is worth pointing at, so the card
+   shows which of its words put it here. */
+.demo-tag.hit {
+  color: var(--tag-color);
+  font-weight: 600;
+}
+
+/* =========================================================
+   Card modal. One panel, reused. Opens in view mode.
+   ========================================================= */
+.demo-modal {
+  position: relative;
+  max-width: 780px;
+  max-height: calc(100vh - 48px);
+  padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.demo-modal::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--cat, var(--accent-a));
+  z-index: 3;
+}
+
+.demo-modal-head {
+  padding: 24px 28px 18px;
+  border-bottom: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+.demo-modal-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 12px;
+}
+.demo-modal-top .tag { margin: 0; }
+.demo-modal .modal-title { margin: 0 0 6px; }
+.demo-modal-desc {
+  color: var(--text-dim);
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 0;
+}
+.demo-modal-tags {
+  color: var(--text-faint);
+  font-size: 12.5px;
+  margin: 8px 0 0;
+}
+.demo-modal-tags:empty { display: none; }
+
+/* ---- Scroll area ---- */
+.demo-modal-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0;
+}
+.modal-pad { padding: 18px 28px 24px; }
+#formPane { padding-bottom: 4px; }
+#formPane .label-caps { margin-bottom: 0; }
+
+/* Minutes, not a duration picker — the unit is fixed, so it's a label. */
+.mins-field { display: flex; align-items: center; gap: 10px; }
+.input-mins { width: 96px; }
+.mins-field > span { color: var(--text-faint); font-size: 13px; }
+
+/* Category chooser inside the form — same dots as the rail */
+
+/* ---- Toolbar: sticks to the top of the scroll area ---- */
+.editor-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 10px 28px;
+  background: var(--bg-panel);
+  border-top: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--border-soft);
+}
+.fmt-btn.on {
+  color: var(--accent-a);
+  border-color: var(--accent-a);
+  box-shadow: 0 0 14px -4px var(--accent-a);
+}
+.fmt-btn svg { width: 14px; height: 14px; }
+.fmt-divider { width: 1px; height: 18px; background: var(--border-soft); margin: 0 3px; }
+
+/* ---- Read view and edit box share their type ---- */
+.rich {
+  color: var(--text);
+  font-size: 14.5px;
+  line-height: 1.7;
+}
+.rich > *:first-child { margin-top: 0; }
+.rich > *:last-child { margin-bottom: 0; }
+.rich p { margin: 0 0 12px; }
+.rich h3 {
+  font-family: var(--font-ui);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-strong);
+  margin: 22px 0 10px;
+}
+.rich ul, .rich ol { margin: 0 0 12px; padding-left: 22px; }
+.rich li { margin-bottom: 6px; }
+.rich li::marker { color: var(--text-faint); }
+.rich a { color: var(--accent-a); }
+.rich img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 14px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--r-field);
+}
+.rich blockquote {
+  margin: 0 0 12px;
+  padding-left: 14px;
+  border-left: 2px solid var(--border);
+  color: var(--text-dim);
+}
+
+.doc { min-height: 40px; }
+.doc-empty { color: var(--text-faint); }
+
+.editor {
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--r-field);
+  padding: 18px 20px;
+  min-height: 300px;
+  outline: none;
+  transition: border-color var(--t);
+}
+.editor:focus { border-color: var(--accent-a); }
+.editor:empty::before {
+  content: attr(data-placeholder);
+  color: var(--text-faint);
+}
+
+/* ---- Footer ---- */
+.demo-modal-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 28px;
+  border-top: 1px solid var(--border-soft);
+  flex-shrink: 0;
+}
+.foot-left, .foot-right { display: flex; align-items: center; gap: 10px; }
+
+/* Destructive: quiet until it's armed, then it says what it'll do. */
+
+/* =========================================================
+   The script, on screen and on paper. One HTML builder feeds
+   both, so what you read is what prints.
+   ========================================================= */
+.script-modal .modal-title { margin: 0 0 6px; }
+
+.script-entry + .script-entry {
+  margin-top: 30px;
+  padding-top: 26px;
+  border-top: 1px solid var(--border-soft);
+}
+.script-entry-title {
+  font-family: var(--font-ui);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: var(--text-strong);
+  margin: 0 0 14px;
+}
+/* Rides at the end of the heading rather than beside it, so a long
+   title wraps and the persona stays attached to it. */
+.script-entry-persona {
+  display: inline-block;
+  margin-left: 10px;
+  vertical-align: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+.script-entry .doc-empty { margin: 0; }
+
+/* ---- Print ---- */
+#printRoot { display: none; }
+
+@media print {
+  @page { margin: 18mm 16mm; }
+
+  html, body {
+    background: #fff !important;
+    color: #14181f !important;
+    min-height: 0;
+  }
+  /* Everything on the page is screen furniture except the script. */
+  body > *:not(#printRoot) { display: none !important; }
+  #printRoot { display: block !important; }
+
+  .print-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+    padding-bottom: 10px;
+    margin-bottom: 26px;
+    border-bottom: 1px solid #c9cfda;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    color: #6b7484;
+  }
+
+  #printRoot .script-entry { break-inside: auto; }
+  #printRoot .script-entry + .script-entry {
+    margin-top: 26px;
+    padding-top: 22px;
+    border-top: 1px solid #dfe3ea;
+  }
+  #printRoot .script-entry-title {
+    font-size: 21px;
+    color: #0b1220;
+    margin: 0 0 10px;
+    break-after: avoid;
+    page-break-after: avoid;
+  }
+  /* On paper the bubble colour is gone, so the persona rides as small
+     grey caps — still enough to tell two same-titled sections apart. */
+  #printRoot .script-entry-persona { color: #6b7484; font-size: 10pt; }
+  #printRoot .rich,
+  #printRoot p, #printRoot li { color: #14181f; font-size: 11.5pt; line-height: 1.55; }
+  #printRoot h3 { color: #0b1220; font-size: 13pt; break-after: avoid; page-break-after: avoid; }
+  #printRoot a { color: #14181f; text-decoration: underline; }
+  #printRoot li::marker { color: #6b7484; }
+  #printRoot blockquote { border-left: 2px solid #c9cfda; color: #4a5464; }
+  #printRoot img { border: 1px solid #dfe3ea; break-inside: avoid; page-break-inside: avoid; }
+  #printRoot .doc-empty { color: #8a919e; font-style: italic; }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 860px) {
+  .demos-layout { grid-template-columns: 1fr; gap: 22px; }
+  .filter-rail { position: static; }
+  .filter-list { grid-template-columns: 1fr 1fr; gap: 2px 10px; }
+  /* Full width now, so the chips don't need the rail's indent. */
+  .tag-filter { margin-top: 18px; }
+  .tag-filter-head { margin-left: 0; }
+  .tag-filter-list { margin-left: 0; }
+}
+
+@media (max-width: 700px) {
+  .demo-head { align-items: flex-start; flex-direction: column; gap: 10px; }
+  .demo-head-right { width: 100%; justify-content: space-between; }
+
+  .script-head-right { width: 100%; }
+  .script-action { flex: 1; justify-content: center; }
+
+  /* Title and description stack; the chip and the menu stay on the first line. */
+  .script-row { flex-wrap: wrap; gap: 8px 12px; padding: 14px; }
+  .script-row-title { flex: 1; min-width: 0; white-space: normal; }
+  .script-row-desc { flex: 1 0 100%; white-space: normal; order: 3; }
+}
+
+@media (max-width: 640px) {
+  .fmt-btn { padding: 6px 8px; }
+  .modal-overlay { padding: 10px; }
+  .demo-modal { max-height: calc(100vh - 20px); }
+  .demo-modal-head { padding: 20px 18px 14px; }
+  .editor-toolbar { padding: 8px 18px; gap: 4px; }
+  .modal-pad { padding: 14px 18px 18px; }
+  .demo-modal-foot { padding: 12px 18px; flex-wrap: wrap; }
+  .foot-right { flex: 1; justify-content: flex-end; }
+}
+
+@media (max-width: 560px) {
+  .demo-grid { grid-template-columns: 1fr; }
+  .filter-list { grid-template-columns: 1fr; }
+}

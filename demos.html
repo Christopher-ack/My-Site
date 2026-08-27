@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<title>Demos — My Site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Design system + page styles, then the nav bar, then this page. -->
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site-nav.css">
+<link rel="stylesheet" href="demos.css">
+</head>
+<body>
+
+<!-- The nav builds itself from site-nav.js. Same two lines on every page. -->
+<div id="nav-mount"></div>
+
+<div class="page">
+  <header class="page-header">
+    <h1>Demos</h1>
+    <p class="tagline">Build out a demo script using the individual blocks below and save it as a script.</p>
+  </header>
+
+  <div class="demos-layout">
+
+    <!-- Modules. Built from demos-data.json; all lit by default. -->
+    <aside class="filter-rail">
+      <span class="label-caps">Modules</span>
+      <div class="filter-list" id="filters"></div>
+
+      <!-- Personas. Same chips as tags, and the same rule: all off
+           means no filter. Sits above tags, below modules. -->
+      <div class="tag-filter" id="personaFilter" hidden>
+        <div class="tag-filter-head">
+          <span class="label-caps">Personas</span>
+          <button class="tag-clear" type="button" id="personaClear" hidden>Clear</button>
+        </div>
+        <div class="tag-filter-list" id="personaFilters"></div>
+      </div>
+
+      <!-- Tags. Gathered from the demo blocks themselves, so this list
+           grows and shrinks with the content. All off means no filter. -->
+      <div class="tag-filter" id="tagFilter" hidden>
+        <div class="tag-filter-head">
+          <span class="label-caps">Tags</span>
+          <button class="tag-clear" type="button" id="tagClear" hidden>Clear</button>
+        </div>
+        <div class="tag-filter-list" id="tagFilters"></div>
+      </div>
+    </aside>
+
+    <section>
+
+      <!-- Script builder. Filled by the + on each card; stays hidden until
+           something's in it, so the page opens the way it always has. -->
+      <section class="script-section" id="scriptSection" hidden>
+        <div class="script-head">
+          <div class="script-head-left">
+            <span class="label-caps">Script builder</span>
+            <span class="count-label" id="scriptCount"></span>
+
+            <!-- Only there once a saved script is open. Says which one, and
+                 lets you cut it loose so the next save starts a new one. -->
+            <span class="script-editing" id="scriptEditing" hidden>
+              <span class="script-editing-label">Editing</span>
+              <span class="script-editing-name" id="scriptEditingName"></span>
+              <button class="icon-btn script-detach" type="button" id="scriptDetach"
+                      aria-label="Stop editing this script">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+              </button>
+            </span>
+          </div>
+          <div class="script-head-right">
+            <button class="control-btn script-action" type="button" id="displayBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h11l5 5v11H4z"/><path d="M14 4v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+              Display script
+            </button>
+            <button class="control-btn script-action" type="button" id="pdfBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11"/><path d="M7.5 10.5L12 15l4.5-4.5"/><path d="M4 18.5h16"/></svg>
+              Export to PDF
+            </button>
+            <!-- The one action that changes something, so the one green thing. -->
+            <button class="control-btn script-action script-save" type="button" id="saveScriptBtn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h11l4 4v12H5z"/><path d="M8 4v6h7V4"/><rect x="8" y="13" width="8" height="7"/></svg>
+              Save script
+            </button>
+          </div>
+        </div>
+        <div class="card script-list" id="scriptList"></div>
+        <p class="script-total" id="scriptTotal"></p>
+      </section>
+
+      <div class="demo-head">
+        <div class="demo-head-left">
+          <span class="label-caps">Browse by module</span>
+          <span class="count-label" id="count"></span>
+        </div>
+
+        <div class="demo-head-right">
+          <!-- Dot is lit only when the page and the file agree. -->
+          <div class="data-pill">
+            <span class="dot" id="dataDot"></span>
+            <span class="data-label" id="dataLabel">Loading…</span>
+            <button class="fmt-btn" type="button" id="downloadBtn">Download</button>
+          </div>
+          <button class="btn-primary btn-small" type="button" id="addBtn">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add demo
+          </button>
+        </div>
+      </div>
+
+      <div class="demo-grid" id="grid"></div>
+
+      <div class="empty-state" id="emptyState">
+        <strong>Nothing to show</strong>
+        <span>Add a demo, or turn a module back on.</span>
+      </div>
+    </section>
+
+  </div>
+</div>
+
+<!-- One modal, reused by every card. Opens in view mode. -->
+<div class="modal-overlay" id="overlay">
+  <div class="modal-box demo-modal" id="modalBox" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+    <header class="demo-modal-head">
+      <div class="demo-modal-top">
+        <span class="tag" id="modalTag"></span>
+        <span class="persona-bubble" id="modalPersona" hidden></span>
+        <span class="card-top-spacer"></span>
+        <button class="icon-btn" id="modalClose" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+        </button>
+      </div>
+      <h2 class="modal-title" id="modalTitle"></h2>
+      <p class="demo-modal-desc" id="modalDesc"></p>
+      <p class="demo-modal-tags" id="modalTags"></p>
+    </header>
+
+    <div class="demo-modal-body" id="modalBody">
+
+      <!-- Edit mode only: the card's own fields -->
+      <div class="modal-pad" id="formPane" hidden>
+        <div class="field">
+          <label class="modal-label" for="fTitle">Title</label>
+          <input type="text" id="fTitle" class="input" placeholder="Name of demo" autocomplete="off" />
+        </div>
+
+        <div class="field">
+          <label class="modal-label">Module</label>
+          <div class="cat-picker" id="fCat"></div>
+        </div>
+
+        <div class="field">
+          <label class="modal-label">Persona</label>
+          <div class="cat-picker" id="fPersona"></div>
+          <div class="inline-add-row">
+            <input class="input input-small" type="text" id="fNewPersona" placeholder="Add a new persona…" autocomplete="off" />
+            <button class="btn btn-small" type="button" id="addPersonaBtn">Add</button>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="modal-label" for="fMins">Approx. time</label>
+          <div class="mins-field">
+            <input type="number" id="fMins" class="input input-mins" min="0" step="1"
+                   inputmode="numeric" placeholder="0" autocomplete="off" />
+            <span>minutes</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="modal-label" for="fDesc">Description</label>
+          <input type="text" id="fDesc" class="input" placeholder="What is being demoed" autocomplete="off" />
+        </div>
+
+        <div class="field">
+          <label class="modal-label" for="fTags">Tags</label>
+          <input type="text" id="fTags" class="input" placeholder="drag and drop, calendar" autocomplete="off" />
+          <p class="hint">Separate tags with commas. They show along the bottom of the card.</p>
+        </div>
+
+        <span class="label-caps">Write-up</span>
+      </div>
+
+      <!-- Edit mode only: formatting controls, stuck to the top of the scroll area -->
+      <div class="editor-toolbar" id="toolbar" hidden>
+        <button class="fmt-btn" type="button" data-cmd="bold" title="Bold" style="font-weight:700">B</button>
+        <button class="fmt-btn" type="button" data-cmd="italic" title="Italic" style="font-style:italic;font-family:Georgia,serif">I</button>
+        <button class="fmt-btn" type="button" data-cmd="heading" title="Heading">Heading</button>
+        <span class="fmt-divider"></span>
+        <button class="fmt-btn" type="button" data-cmd="insertUnorderedList" title="Bulleted list">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="4" cy="6" r="1.4" fill="currentColor" stroke="none"/><circle cx="4" cy="12" r="1.4" fill="currentColor" stroke="none"/><circle cx="4" cy="18" r="1.4" fill="currentColor" stroke="none"/><line x1="9" y1="6" x2="20" y2="6"/><line x1="9" y1="12" x2="20" y2="12"/><line x1="9" y1="18" x2="20" y2="18"/></svg>
+          Bullets
+        </button>
+        <button class="fmt-btn" type="button" data-cmd="insertOrderedList" title="Numbered list">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="10" y1="6" x2="20" y2="6"/><line x1="10" y1="12" x2="20" y2="12"/><line x1="10" y1="18" x2="20" y2="18"/><path d="M4 4.6h1.4V8M3.4 11.4h2.4L3.4 15h2.6M3.6 18h2.2v3H3.6z" stroke-width="1.6"/></svg>
+          Numbers
+        </button>
+        <span class="fmt-divider"></span>
+        <button class="fmt-btn" type="button" data-cmd="link" title="Add a link">Link</button>
+        <button class="fmt-btn" type="button" data-cmd="image" title="Insert an image">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="M21 16l-5-5-6.5 6.5"/></svg>
+          Image
+        </button>
+        <button class="fmt-btn" type="button" data-cmd="removeFormat" title="Clear formatting">Clear</button>
+        <input type="file" id="imgInput" accept="image/*" hidden>
+      </div>
+
+      <div class="modal-pad">
+        <div class="doc rich" id="viewer"></div>
+        <div class="editor rich" id="editor" contenteditable="true" spellcheck="true" hidden></div>
+      </div>
+
+    </div>
+
+    <footer class="demo-modal-foot">
+      <div class="foot-left">
+        <button class="btn btn-danger" type="button" id="deleteBtn" hidden>Delete</button>
+      </div>
+      <div class="foot-right">
+        <button class="btn" type="button" id="cancelBtn" hidden>Cancel</button>
+        <button class="btn" type="button" id="editBtn">Edit</button>
+        <button class="btn-primary" type="button" id="saveBtn" hidden>Save</button>
+        <button class="btn-primary" type="button" id="doneBtn">Done</button>
+      </div>
+    </footer>
+
+  </div>
+</div>
+
+<!-- The script, read only. Same panel shape as a demo card, no edit mode. -->
+<div class="modal-overlay" id="scriptOverlay">
+  <div class="modal-box demo-modal script-modal" role="dialog" aria-modal="true" aria-labelledby="scriptTitle">
+
+    <header class="demo-modal-head">
+      <div class="demo-modal-top">
+        <span class="label-caps" style="margin:0">Script</span>
+        <button class="icon-btn" id="scriptClose" aria-label="Close">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>
+        </button>
+      </div>
+      <h2 class="modal-title" id="scriptTitle">Full script</h2>
+      <p class="demo-modal-desc" id="scriptMeta"></p>
+    </header>
+
+    <div class="demo-modal-body" id="scriptScroll">
+      <div class="modal-pad">
+        <div class="script-doc rich" id="scriptDoc"></div>
+      </div>
+    </div>
+
+    <footer class="demo-modal-foot">
+      <div class="foot-left">
+        <button class="btn" type="button" id="pdfBtnModal">Export to PDF</button>
+      </div>
+      <div class="foot-right">
+        <button class="btn-primary" type="button" id="scriptDone">Done</button>
+      </div>
+    </footer>
+
+  </div>
+</div>
+
+<!-- Naming and filing a script. The list itself is already built —
+     this only asks for the label it gets on the Scripts page. -->
+<div class="modal-overlay" id="saveOverlay">
+  <div class="modal-box modal-box-large save-modal" role="dialog" aria-modal="true" aria-labelledby="saveModalTitle">
+    <h2 class="modal-title" id="saveModalTitle">Save script</h2>
+
+    <div class="field">
+      <label class="modal-label" for="sName">Name</label>
+      <input type="text" id="sName" class="input" placeholder="The name of the script" autocomplete="off" />
+    </div>
+
+    <div class="field">
+      <label class="modal-label">Categories</label>
+      <div class="option-grid" id="sCats"></div>
+      <div class="inline-add-row">
+        <input class="input input-small" type="text" id="sNewCat" placeholder="Add a new category…" autocomplete="off" />
+        <button class="btn btn-small" type="button" id="sAddCatBtn">Add</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="modal-label" for="sDesc">Description</label>
+      <input type="text" id="sDesc" class="input" placeholder="A short description of the script" autocomplete="off" />
+    </div>
+
+    <div class="modal-toggle-row">
+      <div class="modal-toggle-item">
+        <button class="switch" type="button" role="switch" aria-checked="false" id="sFav"></button>
+        <span>Favorite</span>
+      </div>
+    </div>
+
+    <p class="hint" id="sSummary"></p>
+
+    <div class="modal-actions">
+      <span class="modal-actions-spacer"></span>
+      <button class="btn" type="button" id="sCancel">Cancel</button>
+      <button class="btn" type="button" id="sSaveNew" hidden>Save as new</button>
+      <button class="btn-primary" type="button" id="sSave">Save script</button>
+    </div>
+  </div>
+</div>
+
+<!-- Filled just before printing. Off-screen everywhere except on paper. -->
+<div id="printRoot" aria-hidden="true"></div>
+
+<!-- One menu panel, positioned in JS, reused by every script builder row. -->
+<div class="menu-panel" id="rowMenu" role="menu" aria-label="Row actions">
+  <button class="menu-item" type="button" role="menuitem" data-act="up">Move up</button>
+  <button class="menu-item" type="button" role="menuitem" data-act="down">Move down</button>
+  <div class="menu-divider"></div>
+  <button class="menu-item menu-item-danger" type="button" role="menuitem" data-act="remove">Remove</button>
+</div>
+
+<!-- Save status toast -->
+<div class="toast" id="toast"><span class="toast-dot"></span><span id="toastText"></span></div>
+
+<script src="site-nav.js"></script>
+<script src="demos.js"></script>
+</body>
+</html>

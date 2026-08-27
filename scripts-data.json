@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "updated": "2026-08-27T14:44:36.000Z",
+  "categories": [
+    {
+      "id": "tcat01",
+      "label": "Test category 01",
+      "color": "#22d3ee"
+    },
+    {
+      "id": "tcat02",
+      "label": "Test category 02",
+      "color": "#f472b6"
+    }
+  ],
+  "scripts": [
+    {
+      "id": "stest01",
+      "title": "Test 01",
+      "desc": "Test description",
+      "cats": [
+        "tcat01"
+      ],
+      "fav": true,
+      "demos": [
+        "dtest01",
+        "dtest02",
+        "dtest03"
+      ],
+      "mins": 45,
+      "created": "2026-08-08T14:44:36.000Z",
+      "updated": "2026-08-26T12:44:36.000Z"
+    },
+    {
+      "id": "stest02",
+      "title": "Test 02",
+      "desc": "Test description",
+      "cats": [
+        "tcat02"
+      ],
+      "fav": true,
+      "demos": [
+        "dtest02",
+        "dtest03",
+        "dtest04"
+      ],
+      "mins": 40,
+      "created": "2026-08-09T14:44:36.000Z",
+      "updated": "2026-08-25T10:44:36.000Z"
+    },
+    {
+      "id": "stest03",
+      "title": "Test 03",
+      "desc": "Test description",
+      "cats": [
+        "tcat01"
+      ],
+      "fav": true,
+      "demos": [
+        "dtest03",
+        "dtest04",
+        "dtest05"
+      ],
+      "mins": 35,
+      "created": "2026-08-10T14:44:36.000Z",
+      "updated": "2026-08-24T08:44:36.000Z"
+    },
+    {
+      "id": "stest04",
+      "title": "Test 04",
+      "desc": "Test description",
+      "cats": [
+        "tcat02"
+      ],
+      "fav": false,
+      "demos": [
+        "dtest04",
+        "dtest05",
+        "dtest06"
+      ],
+      "mins": 30,
+      "created": "2026-08-11T14:44:36.000Z",
+      "updated": "2026-08-23T06:44:36.000Z"
+    },
+    {
+      "id": "stest05",
+      "title": "Test 05",
+      "desc": "Test description",
+      "cats": [
+        "tcat01"
+      ],
+      "fav": false,
+      "demos": [
+        "dtest01",
+        "dtest02",
+        "dtest03"
+      ],
+      "mins": 45,
+      "created": "2026-08-12T14:44:36.000Z",
+      "updated": "2026-08-22T04:44:36.000Z"
+    }
+  ]
+}

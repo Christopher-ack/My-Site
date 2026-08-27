@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "updated": "2026-08-26T19:04:11.147Z",
+  "features": {
+    "demos.html": {
+      "title": "Test title",
+      "body": "This is just a test at the moment.",
+      "linkLabel": "Open Demos",
+      "href": "demos.html"
+    },
+    "tasks.html": {
+      "title": "Four columns, one drag",
+      "body": "Active, pending, complete, canceled. Move a card and the file moves with it.",
+      "linkLabel": "Open the board",
+      "href": "tasks-all.html"
+    }
+  },
+  "tiles": {
+    "demos.html": [],
+    "tasks.html": []
+  }
+}

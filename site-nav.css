@@ -1,0 +1,491 @@
+/* =========================================================
+   SITE NAV — sticky top bar + mega menu
+   Load after design-system.css. Uses only existing tokens.
+   ========================================================= */
+
+:root { --nav-h: 60px; }
+
+/* Anchor links land below the bar instead of under it. */
+html { scroll-padding-top: calc(var(--nav-h) + 12px); }
+
+/* ---- Mount point ----
+   Empty, it holds the bar's height open so the page doesn't jump.
+   Once filled it generates no box at all, which leaves .site-nav as a
+   direct child of <body> — required for position: sticky to work. */
+#nav-mount       { display: contents; }
+#nav-mount:empty { display: block; height: var(--nav-h); }
+
+/* ---- Bar ---- */
+.site-nav {
+  position: sticky;
+  top: 0;
+  z-index: 250;                 /* above page + dropdowns, below modals (300) */
+  background: var(--bg-panel);
+  border-bottom: 1px solid var(--border-soft);
+  transition: border-color var(--t), box-shadow var(--t);
+}
+.site-nav.scrolled  { border-bottom-color: var(--border); box-shadow: 0 12px 30px -22px rgba(0,0,0,.95); }
+.site-nav.menu-open { border-bottom-color: var(--border); }
+
+.nav-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 28px;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  gap: 26px;
+}
+
+/* ---- Brand ---- */
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-family: var(--font-ui);
+  font-weight: 700;
+  font-size: 17px;
+  letter-spacing: -0.2px;
+  color: var(--text-strong);
+  text-decoration: none;
+  white-space: nowrap;
+}
+/* The one thing that's always on. */
+.brand-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent-a);
+  box-shadow: 0 0 6px 1px var(--accent-a),
+              0 0 14px 3px color-mix(in srgb, var(--accent-a) 55%, transparent);
+}
+
+/* ---- Wrappers that vanish on desktop ---- */
+.nav-collapse { display: contents; }
+.nav-group    { display: contents; }
+
+/* ---- Top-level items ---- */
+.nav-items { display: flex; align-items: center; gap: 2px; }
+
+.nav-item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: var(--nav-h);
+  padding: 0 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color var(--t);
+}
+.nav-item:hover { color: var(--text); }
+.nav-item.open  { color: var(--accent-a); }
+
+.nav-item .chevron { width: 7px; height: 7px; border-width: 1.5px; margin-top: -3px; opacity: .75; }
+.nav-item.open .chevron { transform: rotate(-135deg); margin-top: 3px; }
+
+/* Current section reads as an active tab — same gradient hairline. */
+.nav-item.current { color: var(--text-strong); }
+.nav-item.current::after {
+  content: "";
+  position: absolute;
+  left: 12px; right: 12px; bottom: -1px;
+  height: 2px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--accent-a), var(--accent-b));
+}
+
+.nav-right {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-burger { display: none; }
+
+/* ---- "New" button + its menu ----
+   The group is the positioning context, so the panel hangs directly
+   below the button rather than off the bar. */
+.cta-group { position: relative; }
+
+/* It used to be an anchor; as a <button> it needs the shell spelled out. */
+.cta-btn {
+  font-family: inherit;
+  border: 1px solid var(--accent-b);
+  cursor: pointer;
+  transition: filter var(--t);
+}
+
+.cta-btn .chevron {
+  width: 7px; height: 7px;
+  border-width: 1.5px;
+  margin-top: -3px;
+  opacity: .8;
+}
+.cta-btn.open .chevron { transform: rotate(-135deg); margin-top: 3px; }
+
+/* .menu-panel is fixed and JS-placed elsewhere on the site.
+   Here it's anchored, so override the position and pin it right. */
+.cta-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: auto;
+  min-width: 172px;
+  z-index: 251;               /* above the bar, below modals */
+}
+.cta-item { white-space: nowrap; }
+.cta-item[disabled] {
+  opacity: .45;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ---- Mega panel ---- */
+.mega {
+  position: absolute;
+  left: 0; right: 0;
+  top: 100%;
+  background: var(--bg-popover);
+  border-top: 1px solid var(--border-soft);
+  border-bottom: 1px solid var(--border);
+  box-shadow: var(--shadow-pop);
+  display: none;
+  z-index: 249;
+}
+.mega.open { display: block; }
+
+/* Four columns, always: three for pages and the promoted card in the
+   fourth. Fixing the shape means the card sits in the same place in
+   every menu, however many columns of links a section has. */
+.mega-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 26px 28px 30px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) 268px;
+  gap: 30px;
+}
+
+.mega-col .label-caps { margin-bottom: 6px; }
+
+.mega-link {
+  display: block;
+  padding: 9px 10px;
+  margin: 0 -10px;
+  border-radius: var(--r-item);
+  text-decoration: none;
+  transition: background var(--t-fast);
+}
+.mega-link:hover { background: var(--bg-hover-soft); }
+.mega-link b {
+  display: block;
+  color: var(--text);
+  font-size: 14px;
+  font-weight: 600;
+}
+.mega-link:hover b { color: var(--text-strong); }
+.mega-link span {
+  display: block;
+  color: var(--text-faint);
+  font-size: 12.5px;
+  line-height: 1.45;
+  margin-top: 2px;
+}
+
+/* ---- Tile block: the middle two columns, read as one section ---- */
+.mega-tiles {
+  position: relative;
+  grid-column: 2 / 4;
+  align-self: start;
+  padding-right: 30px;              /* keeps the pencil clear of the tiles */
+}
+
+.mega-tile-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+/* A rectangle carrying its own colour. Tinted rather than filled, so a
+   row of them doesn't shout over the rest of the menu. */
+.mega-tile {
+  display: block;
+  padding: 12px 14px;
+  border-radius: var(--r-item);
+  border: 1px solid color-mix(in srgb, var(--tile) 38%, transparent);
+  background: color-mix(in srgb, var(--tile) 13%, transparent);
+  text-decoration: none;
+  transition: background var(--t-fast), border-color var(--t-fast),
+              box-shadow var(--t-fast);
+}
+.mega-tile:hover {
+  background: color-mix(in srgb, var(--tile) 22%, transparent);
+  border-color: color-mix(in srgb, var(--tile) 60%, transparent);
+  box-shadow: 0 0 14px -6px var(--tile);
+}
+.mega-tile b {
+  display: block;
+  color: var(--text-strong);
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+.mega-tile span {
+  display: block;
+  margin-top: 3px;
+  color: var(--text-faint);
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.mega-tile-empty {
+  margin: 0;
+  padding: 18px 0;
+  color: var(--text-faint);
+  font-size: 12.5px;
+}
+
+/* Right rail: one promoted thing per menu, always in the last column. */
+.mega-feature {
+  position: relative;
+  grid-column: 4;
+  align-self: start;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pop);
+  padding: 16px;
+}
+/* No tag above the heading any more, so the heading starts the card. */
+.mega-feature h4 {
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-strong);
+  margin: 0 0 6px;
+  padding-right: 24px;               /* room for the pencil */
+}
+
+/* Edit affordance. Hidden until the card is pointed at, so the menu
+   stays a menu and doesn't read as a row of controls. */
+.mega-feature-edit {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--r-item);
+  background: none;
+  color: var(--text-faint);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--t), color var(--t-fast),
+              background var(--t-fast), border-color var(--t-fast);
+}
+/* The tile block shares the pencil's styling, so it shares the reveal. */
+.mega-feature:hover .mega-feature-edit,
+.mega-tiles:hover .mega-feature-edit,
+.mega-feature-edit:focus-visible { opacity: 1; }
+.mega-feature-edit:hover {
+  color: var(--text);
+  background: var(--bg-hover-soft);
+  border-color: var(--border);
+}
+
+/* ---- Feature edit modal ---- */
+.nav-feature-modal { max-width: 560px; }
+.nav-feature-modal textarea.input {
+  resize: vertical;
+  min-height: 68px;
+  line-height: 1.5;
+}
+.nav-feature-status { margin: 0 0 4px; }
+.nav-feature-status.is-warn { color: var(--accent-warn); }
+
+/* ---- Tile editor ---- */
+/* Four fields plus a grip and a delete don't fit the shared 480px box,
+   so this one overrides it. width: 100% is already on .modal-box and the
+   overlay pads 20px, so a narrow window just shrinks it. */
+.nav-tiles-modal { max-width: 940px; }
+
+/* A table in name only: rows are grids, so a row can be picked up and
+   moved without a <tr> losing its layout the moment it leaves the table. */
+.nav-tiles-modal .tile-table { margin: 6px 0 12px; }
+
+.tile-table-head,
+.tile-row {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) minmax(0, 1.35fr) minmax(0, 1.1fr) 124px 30px;
+  gap: 10px;
+  align-items: center;
+}
+.tile-table-head {
+  padding: 0 0 6px;
+  color: var(--text-faint);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .5px;
+  text-transform: uppercase;
+}
+.tile-rows { display: flex; flex-direction: column; gap: 6px; }
+
+.tile-row {
+  padding: 4px 0;
+  border-radius: var(--r-item);
+  transition: opacity var(--t), background var(--t-fast);
+}
+.tile-row:hover { background: var(--bg-hover-soft); }
+.tile-row.dragging { opacity: .3; }
+
+.tile-grip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--icon-idle);
+  cursor: grab;
+  touch-action: none;
+  transition: color var(--t-fast);
+}
+.tile-grip:hover { color: var(--icon-hover); }
+.tile-row.dragging .tile-grip { cursor: grabbing; }
+
+/* Swatch and picker share a cell, so the colour is visible in the row
+   rather than only after saving. */
+.tile-color { display: flex; align-items: center; gap: 7px; min-width: 0; }
+.tile-color select { flex: 1; min-width: 0; }
+.tile-swatch {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  border-radius: 4px;
+  background: var(--tile);
+  box-shadow: 0 0 7px -1px var(--tile);
+}
+
+.tile-del { width: 28px; height: 28px; }
+.tile-del:hover { color: var(--accent-love); }
+
+.nav-tile-add { margin-bottom: 4px; }
+
+/* What follows the pointer. */
+.tile-row-ghost {
+  position: fixed;
+  z-index: 400;
+  pointer-events: none;
+  margin: 0;
+  padding: 4px 10px;
+  cursor: grabbing;
+  border: 1px solid var(--border-hover);
+  border-radius: var(--r-item);
+  background: var(--bg-popover);
+  box-shadow: var(--shadow-modal);
+  transform: rotate(-.3deg);
+}
+body.dragging-tile { cursor: grabbing; user-select: none; }
+
+@media (max-width: 720px) {
+  /* Stacked labels: the head row can't line up with wrapped fields. */
+  .tile-table-head { display: none; }
+  .tile-row {
+    grid-template-columns: 22px minmax(0, 1fr) 30px;
+    row-gap: 6px;
+    padding: 10px 8px;
+    border: 1px solid var(--border-soft);
+  }
+  .tile-row .input[data-f="desc"],
+  .tile-row .input[data-f="url"],
+  .tile-row .tile-color { grid-column: 2; }
+}
+.mega-feature p {
+  color: var(--text-faint);
+  font-size: 12.5px;
+  line-height: 1.5;
+  margin: 0 0 12px;
+}
+.mega-feature a {
+  color: var(--accent-a);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.mega-feature a:hover { text-decoration: underline; }
+
+/* ---- Mobile: bar collapses into a drawer ---- */
+@media (max-width: 900px) {
+  .nav-inner { gap: 0; padding: 0 18px; }
+  .nav-burger { display: inline-flex; margin-left: auto; }
+
+  .nav-collapse {
+    display: none;
+    position: fixed;
+    left: 0; right: 0;
+    top: var(--nav-h); bottom: 0;
+    z-index: 249;
+    background: var(--bg);
+    border-top: 1px solid var(--border-soft);
+    overflow-y: auto;
+    padding: 4px 18px 48px;
+  }
+  .nav-collapse.open { display: block; }
+
+  .nav-group { display: block; }
+
+  .nav-items { flex-direction: column; align-items: stretch; gap: 0; }
+  .nav-item {
+    width: 100%;
+    height: auto;
+    padding: 17px 4px;
+    justify-content: space-between;
+    font-size: 16px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .nav-item .chevron { transform: rotate(-45deg); margin-top: 0; opacity: .6; }
+  .nav-item.open .chevron { transform: rotate(45deg); margin-top: 0; }
+  .nav-item.current::after { left: 4px; right: auto; width: 18px; bottom: 0; }
+
+  .mega {
+    position: static;
+    background: none;
+    border: none;
+    box-shadow: none;
+  }
+  .mega-inner {
+    max-width: none;
+    grid-template-columns: 1fr;
+    gap: 18px;
+    padding: 14px 4px 22px;
+  }
+  /* Stacked, so the card can't be "far right" — it goes last instead. */
+  .mega-feature { grid-column: auto; }
+  .mega-tiles { grid-column: auto; padding-right: 0; }
+  .mega-tile-grid { grid-template-columns: 1fr; }
+  .mega-feature-edit { opacity: 1; }      /* no hover on a touch screen */
+
+  .nav-right { margin: 24px 0 0; flex-direction: column; align-items: stretch; }
+  .nav-right .btn-primary { justify-content: center; }
+
+  /* In the drawer there's nothing to float over, so the menu just
+     opens in the flow underneath the button. */
+  .cta-group { display: flex; flex-direction: column; }
+  .cta-menu {
+    position: static;
+    margin-top: 8px;
+    min-width: 0;
+    box-shadow: none;
+  }
+  .cta-item { font-size: 15px; padding: 13px 12px; }
+}

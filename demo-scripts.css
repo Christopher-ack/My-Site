@@ -1,0 +1,226 @@
+/* =========================================================
+   SAVED SCRIPTS PAGE
+   Loaded after site.css, site-nav.css and demos.css. Demos
+   carries the script panel, the rich-text rules and the print
+   sheet; this file only adds the shelf and the table.
+   ========================================================= */
+
+/* Some components below set `display`, which would otherwise out-rank
+   the browser's rule for [hidden]. This page toggles panes and buttons
+   with that attribute, so it has to win. */
+
+/* An <a> wearing a button. Same shell, no underline. */
+
+/* ---------------------------------------------------------
+   Favorites shelf. Sits above the table, ruled off from it the
+   same way the page header is ruled off from the page.
+--------------------------------------------------------- */
+.fav-section {
+  border-bottom: 1px solid var(--border-soft);
+  padding-bottom: 26px;
+  margin-bottom: 26px;
+}
+.fav-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.fav-head .label-caps { margin-bottom: 0; }
+.fav-head .count-label { padding-bottom: 0; }
+
+.fav-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+
+/* The whole tile opens the script in the builder. An <a> wearing .card,
+   so hit area, middle-click and "open in new tab" all work for free. */
+.fav-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-align: center;
+  min-height: 148px;
+  padding: 30px 22px 26px;
+  text-decoration: none;
+  cursor: pointer;
+  transition: border-color var(--t), background var(--t);
+}
+/* Top hairline carries the first category's color. Solid, not the
+   cyan→green gradient — that stays reserved for the primary card. */
+.fav-tile::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--cat);
+}
+.fav-tile:hover {
+  border-color: var(--border-hover);
+  background: #141d31;
+}
+
+.fav-title {
+  font-family: var(--font-ui);
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--text-strong);
+  overflow-wrap: anywhere;
+}
+.fav-meta {
+  font-size: 12.5px;
+  color: var(--text-faint);
+}
+.fav-cats { display: flex; flex-wrap: wrap; justify-content: center; gap: 0; }
+.fav-cats .tag { margin: 2px 3px; }
+
+/* Lit, because everything on this shelf is a favorite. Not a button —
+   the tile has one job and clicking anywhere on it does that job. */
+.fav-heart {
+  position: absolute;
+  top: 12px;
+  right: 13px;
+  color: var(--accent-love);
+  display: inline-flex;
+  filter: drop-shadow(0 0 5px color-mix(in srgb, var(--accent-love) 70%, transparent));
+}
+.fav-heart svg { width: 14px; height: 14px; }
+
+/* ---------------------------------------------------------
+   Head row above the filter bar
+--------------------------------------------------------- */
+.list-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.list-head-left {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.list-head-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.list-head .label-caps { margin-bottom: 0; }
+.list-head .count-label { padding-bottom: 0; }
+
+/* Search grows into whatever the categories button leaves behind,
+   with the build button pinned to the far end of the bar. */
+.filter-bar-left { flex: 1; min-width: 0; }
+.filter-bar-left .search-control { flex: 1; max-width: 420px; }
+
+/* Count on the right of each category row in the dropdown. */
+
+/* ---------------------------------------------------------
+   Table
+--------------------------------------------------------- */
+/* The name opens the script in the builder. Underline only on hover,
+   so a table of twenty of them doesn't read as twenty underlines. */
+.script-name {
+  color: var(--text-strong);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color var(--t-fast), border-color var(--t-fast);
+}
+.script-name:hover {
+  color: var(--accent-a);
+  border-bottom-color: color-mix(in srgb, var(--accent-a) 55%, transparent);
+}
+
+.script-desc {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* On a narrow screen the columns fold away, so the same facts come
+   back under the name rather than disappearing. */
+.script-inline-meta {
+  display: none;
+  margin-top: 6px;
+  color: var(--text-faint);
+  font-size: 12.5px;
+  font-weight: 400;
+}
+
+.script-cats { display: flex; flex-wrap: wrap; gap: 0; }
+.script-cats .tag { margin: 2px 5px 2px 0; }
+
+.script-count {
+  color: var(--text);
+  font-size: 13.5px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.script-time {
+  display: block;
+  margin-top: 3px;
+  color: var(--text-faint);
+  font-size: 12.5px;
+  font-weight: 400;
+}
+.script-updated {
+  color: var(--text-faint);
+  font-size: 13px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+/* A demo the script points at has since been deleted. Orange, because
+   it needs attention rather than because anything is broken. */
+.script-gap {
+  display: block;
+  margin-top: 4px;
+  color: var(--accent-warn);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+/* Empty state lives inside the card, so the card never collapses. */
+
+/* ---------------------------------------------------------
+   Modal
+--------------------------------------------------------- */
+.script-meta-modal .modal-title { margin-bottom: 22px; }
+.script-meta-modal .option-grid { max-height: 180px; }
+.script-meta-modal .inline-add-row .input { flex: 1; min-width: 0; }
+.script-meta-modal .inline-add-row .btn { flex-shrink: 0; }
+.script-meta-modal .inline-add-row + .hint { margin-top: 8px; }
+.script-meta-modal #fSummary { margin: 18px 0 0; }
+
+/* Delete arms in place, in the menu as well as in the modal. */
+.menu-item.armed { color: var(--accent-love); }
+
+/* ---------------------------------------------------------
+   Small screens
+--------------------------------------------------------- */
+/* .col-hide-sm folds the middle columns away at 640px, so that's where
+   the same facts reappear under the name. */
+@media (max-width: 640px) {
+  .fmt-btn { padding: 6px 8px; }
+  .script-inline-meta { display: block; }
+  .fav-grid { grid-template-columns: 1fr; }
+  .list-head { align-items: flex-start; }
+  .filter-bar-left { width: 100%; }
+  .filter-bar-left .search-control { max-width: none; }
+}
+
+/* Empty state lives inside the card, so the card never collapses. */
+.card .empty-state { border-top: 1px solid var(--border-soft); }

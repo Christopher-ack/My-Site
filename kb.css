@@ -1,0 +1,681 @@
+/* =========================================================
+   KNOWLEDGE BASE
+
+   Three columns: folders, pages, the page you're reading.
+   Everything visual is borrowed — site.css for controls,
+   demos.css for the rich text and the editor toolbar. What's
+   here is the shell, the two rails, and the @ picker.
+   ========================================================= */
+
+/* Three panes need more room than the 1080px reading measure. */
+.page-wide { max-width: 1440px; }
+
+/* The bar above the panes: what's in the file on the left, whether the
+   file agrees on the right. Same shape as the other pages' head bars. */
+.kb-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.kb-head-left {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.kb-head-left .label-caps { margin-bottom: 0; }
+.kb-head-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.kb-shell {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* ---------------------------------------------------------
+   The joined pane
+
+   The pages list and the page itself are one card with a single
+   divider down the middle, so the list reads as part of what it
+   opens rather than as a separate box sitting next to it.
+
+   Two things have to be true at once: the divider runs the full
+   height of the card, and the list stays in view while a long page
+   scrolls. So the rail column stretches to the card's height and a
+   sticky wrapper inside it holds the head, search and list.
+--------------------------------------------------------- */
+.kb-main {
+  --rail-w: 290px;
+  display: grid;
+  grid-template-columns: var(--rail-w) minmax(0, 1fr);
+  align-items: stretch;
+  min-height: 520px;
+  /* .card clips with overflow: hidden, which would make an ancestor
+     scrollport and stop the rail sticking. clip does the same corner
+     trimming without that side effect. A browser that doesn't know it
+     keeps hidden and simply loses the sticky, which is survivable. */
+  overflow: clip;
+}
+
+/* The accent belongs to the page, not to the list beside it. Starting it
+   at the divider keeps it off the rail's rounded top-left corner, where
+   it otherwise showed as a stray sliver of colour above the heading.
+   One variable drives both this and the column, so they can't drift. */
+.kb-main.card-accent::before { left: var(--rail-w); }
+
+.kb-rail-joined {
+  position: static;                      /* the inner wrapper sticks instead */
+  max-height: none;
+  min-width: 0;
+  border-right: 1px solid var(--border);
+  background: var(--bg-sunken);          /* the list side sits back a shade */
+  /* Follows the card's corners, so the tint doesn't square them off if
+     clipping isn't available. */
+  border-radius: var(--r-card) 0 0 var(--r-card);
+}
+
+.kb-rail-inner {
+  position: sticky;
+  top: calc(var(--nav-h) + 16px);
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - var(--nav-h) - 32px);
+  min-height: 0;
+  min-width: 0;
+}
+
+/* The shared control carries a 240px floor for use in a page header.
+   In a rail narrower than that it has to give, or it runs out over the
+   divider — so here it shrinks to whatever the column leaves it. */
+.kb-rail-search .search-control {
+  min-width: 0;
+  max-width: 100%;
+}
+.kb-rail-search .search-input { min-width: 0; }
+
+/* ---------------------------------------------------------
+   Rails
+--------------------------------------------------------- */
+.kb-rail {
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: calc(var(--nav-h) + 16px);
+  max-height: calc(100vh - var(--nav-h) - 32px);
+}
+
+.kb-rail-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 14px 8px 8px 16px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.kb-rail-head .label-caps { margin-bottom: 0; }
+
+.kb-add { width: 28px; height: 28px; }
+.kb-add:hover { color: var(--accent-a); }
+
+.kb-rail-search { padding: 10px 12px; border-bottom: 1px solid var(--border-soft); }
+.kb-rail-search .search-control { width: 100%; }
+
+.kb-rail-add { padding: 10px 12px; border-top: 1px solid var(--border-soft); }
+.kb-rail-add .input { width: 100%; }
+
+/* The scrolling part. Overscroll is contained so flicking a rail
+   to its end doesn't then drag the whole page with it. */
+.kb-list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px;
+}
+
+/* ---- A row in either rail ----
+   The row is a shell; the anchor inside it is the whole clickable area.
+   Nesting the kebab inside the anchor would be invalid, and a link is
+   worth keeping — copy link and open in new tab come free with it. */
+.kb-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 2px;
+  border-radius: var(--r-item);
+  transition: background var(--t);
+}
+.kb-row:hover { background: var(--bg-hover-soft); }
+.kb-row.on { background: var(--bg-active); }
+
+.kb-row-link {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 8px 9px;
+  color: var(--text-dim);
+  text-decoration: none;
+  transition: color var(--t);
+}
+.kb-row:hover .kb-row-link { color: var(--text); }
+.kb-row.on .kb-row-link { color: var(--text-strong); }
+
+.kb-row-body { flex: 1; min-width: 0; }
+
+.kb-row-name {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Snippet and date share a line — two facts, one row of height. */
+.kb-row-sub {
+  display: block;
+  font-size: 12px;
+  color: var(--text-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-top: 2px;
+}
+
+.kb-row-count {
+  font-size: 12px;
+  color: var(--text-faint);
+  font-variant-numeric: tabular-nums;
+  padding-top: 1px;
+}
+
+/* Folder dot, coloured per folder like a category. */
+.kb-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 6px;
+  background: var(--dot-color, var(--text-faint));
+  box-shadow: 0 0 5px 0 var(--dot-color, transparent);
+}
+
+/* The kebab only appears on the row you're pointing at, so a list
+   of folders reads as a list and not as a column of buttons. */
+.kb-row-menu {
+  opacity: 0;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  margin: 5px 4px 0 0;
+  transition: opacity var(--t);
+}
+.kb-row:hover .kb-row-menu,
+.kb-row-menu:focus-visible,
+.kb-row-menu.open { opacity: 1; }
+
+/* ---------------------------------------------------------
+   Page tree
+
+   Depth is carried on the row as --depth and spent as padding on the
+   link, so the whole row still highlights edge to edge while the text
+   steps inward. The hairline is a background gradient rather than one
+   element per level — cheaper, and it can't fall out of alignment.
+--------------------------------------------------------- */
+.kb-page-row {
+  position: relative;
+  align-items: center;
+}
+.kb-page-row .kb-row-link {
+  padding-left: calc(2px + var(--depth, 0) * 16px);
+  align-items: center;
+}
+/* One guide line per level, drawn behind the row. */
+.kb-page-row .kb-row-link::before {
+  content: "";
+  position: absolute;
+  left: calc(28px + (var(--depth, 0) - 1) * 16px);
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--border-soft);
+  opacity: var(--guide, 0);
+}
+.kb-page-row:not([data-depth="0"]) .kb-row-link::before { --guide: 1; }
+
+/* ---- Grip ---- */
+.kb-grip {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--icon-idle);
+  cursor: grab;
+  opacity: 0;
+  touch-action: none;                /* a drag here is a drag, not a scroll */
+  transition: opacity var(--t), color var(--t-fast);
+}
+.kb-row:hover .kb-grip,
+.kb-grip:focus-visible { opacity: 1; }
+.kb-grip:hover { color: var(--icon-hover); }
+.kb-grip:focus-visible {
+  outline: 1px solid var(--accent-a);
+  outline-offset: 1px;
+  border-radius: 3px;
+}
+.kb-page-row.dragging .kb-grip { cursor: grabbing; }
+
+/* ---- Twisty ---- */
+/* A childless row gets the same gap, so names stay in one column. */
+.kb-twisty,
+.kb-twisty-gap {
+  width: 14px;
+  flex-shrink: 0;
+}
+.kb-twisty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition: transform var(--t-fast), color var(--t-fast);
+}
+.kb-twisty:hover { color: var(--text); }
+.kb-twisty.open { transform: rotate(90deg); }
+
+/* ---- Indent and promote ---- */
+.kb-row-tools {
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
+  padding-right: 4px;
+  opacity: 0;
+  transition: opacity var(--t);
+}
+.kb-row:hover .kb-row-tools,
+.kb-row-tools:focus-within { opacity: 1; }
+
+.kb-nest-btn {
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+/* ---- Dragging ---- */
+.kb-page-row.dragging { opacity: .3; }
+
+.kb-row-ghost {
+  position: fixed;
+  z-index: 400;
+  pointer-events: none;
+  margin: 0;
+  cursor: grabbing;
+  border: 1px solid var(--border-hover);
+  border-radius: var(--r-item);
+  background: var(--bg-panel);
+  box-shadow: var(--shadow-modal);
+  transform: rotate(-.4deg);
+}
+.kb-row-ghost .kb-grip,
+.kb-row-ghost .kb-row-tools { opacity: 1; }
+
+/* A parent travels with its subtree, so the ghost says how many. */
+.kb-ghost-count {
+  align-self: center;
+  margin-right: 8px;
+  padding: 1px 6px;
+  border-radius: 999px;
+  background: var(--accent-a);
+  color: #04121a;
+  font-size: 10.5px;
+  font-weight: 700;
+}
+
+/* Where it will land. Inset to the depth of the level being dropped
+   into, so the line itself says which level that is. */
+.kb-drop-line {
+  position: fixed;
+  z-index: 401;
+  height: 2px;
+  margin-top: -1px;
+  border-radius: 2px;
+  background: var(--accent-a);
+  box-shadow: 0 0 8px -1px var(--accent-a);
+  pointer-events: none;
+}
+.kb-drop-line::before {
+  content: "";
+  position: absolute;
+  left: -3px;
+  top: -2px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent-a);
+}
+
+body.dragging-page { cursor: grabbing; user-select: none; }
+
+.kb-rail-empty {
+  padding: 14px 12px 18px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--text-faint);
+}
+
+/* ---------------------------------------------------------
+   The page
+--------------------------------------------------------- */
+.kb-doc {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.kb-doc-head { padding: 22px 28px 16px; border-bottom: 1px solid var(--border-soft); }
+
+.kb-doc-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 10px;
+}
+
+.kb-crumb {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+  color: var(--text-faint);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.kb-crumb .kb-dot { margin-top: 0; }
+.kb-crumb span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.kb-doc-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+/* Display face here, same as a page heading — a page in the knowledge
+   base is a document, not a table row. */
+.kb-doc-title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.15;
+  color: var(--text-strong);
+  margin: 0;
+  overflow-wrap: break-word;
+}
+
+/* The editable title is the same type, so switching to edit mode
+   doesn't make the page jump. */
+.kb-title-input {
+  width: 100%;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 30px;
+  line-height: 1.15;
+  color: var(--text-strong);
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--r-field);
+  padding: 6px 12px;
+  outline: none;
+  transition: border-color var(--t);
+}
+.kb-title-input:focus { border-color: var(--accent-a); }
+.kb-title-input::placeholder { color: var(--text-faint); }
+
+.kb-doc-meta {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--text-faint);
+}
+
+.kb-move { display: inline-flex; align-items: center; gap: 8px; }
+.kb-move > span {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .3px;
+  color: var(--text-dim);
+}
+.kb-move select { padding: 6px 10px; }
+
+.kb-toolbar { padding: 10px 28px; }
+
+.kb-doc-body { flex: 1; min-height: 0; overflow-y: auto; }
+.kb-doc-pad { padding: 24px 28px 32px; }
+
+.kb-doc-pad .editor { min-height: 340px; }
+
+.kb-doc-blank {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 60px 24px;
+  text-align: center;
+}
+.kb-doc-blank strong { color: var(--text-dim); font-size: 15px; }
+.kb-doc-blank span { color: var(--text-faint); font-size: 13px; }
+
+/* ---------------------------------------------------------
+   Page links, in the reader and in the editor
+--------------------------------------------------------- */
+.rich a.page-link {
+  color: var(--accent-b);
+  text-decoration: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--accent-b) 40%, transparent);
+  padding-bottom: 1px;
+}
+.rich a.page-link:hover {
+  border-bottom-color: var(--accent-b);
+  background: color-mix(in srgb, var(--accent-b) 12%, transparent);
+}
+
+/* A link whose page has been deleted says so rather than going nowhere. */
+.rich a.page-link.is-missing {
+  color: var(--text-faint);
+  border-bottom-style: dashed;
+  border-bottom-color: var(--text-faint);
+  cursor: help;
+}
+.rich a.page-link.is-missing:hover { background: none; }
+
+/* ---------------------------------------------------------
+   Linked from
+--------------------------------------------------------- */
+.kb-backlinks {
+  margin-top: 36px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-soft);
+}
+.kb-backlink-list { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.kb-backlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-dim);
+  background: var(--bg-sunken);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pill);
+  padding: 6px 14px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--t);
+}
+.kb-backlink:hover {
+  color: var(--text-strong);
+  border-color: var(--border-hover);
+  background: var(--bg-hover);
+}
+.kb-backlink .kb-dot { margin-top: 0; width: 6px; height: 6px; }
+
+/* ---------------------------------------------------------
+   The @ picker
+--------------------------------------------------------- */
+.kb-mention {
+  display: none;
+  position: fixed;
+  z-index: 60;
+  width: 300px;
+  max-height: 260px;
+  overflow-y: auto;
+  background: var(--bg-popover);
+  border: 1px solid var(--border);
+  border-radius: var(--r-pop);
+  box-shadow: var(--shadow-pop);
+  padding: 6px;
+}
+.kb-mention.open { display: block; }
+
+.kb-mention-hint {
+  padding: 9px 11px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-faint);
+}
+
+.kb-option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  text-align: left;
+  font-family: inherit;
+  background: none;
+  border: 0;
+  border-radius: var(--r-item);
+  padding: 8px 10px;
+  cursor: pointer;
+  color: var(--text-dim);
+}
+/* Keyboard and mouse land on the same highlight, so arrowing down and
+   pointing at a row can't disagree about what Enter will pick. */
+.kb-option.on { background: var(--bg-hover-soft); color: var(--text-strong); }
+
+.kb-option-name {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.kb-option-folder { font-size: 12px; color: var(--text-faint); flex-shrink: 0; }
+
+/* ---------------------------------------------------------
+   Narrower screens
+--------------------------------------------------------- */
+@media (max-width: 1180px) {
+  .kb-shell { grid-template-columns: 190px minmax(0, 1fr); }
+  .kb-main { --rail-w: 250px; }
+  .kb-doc-pad { padding: 20px 22px 28px; }
+  .kb-doc-head { padding: 18px 22px 14px; }
+  .kb-toolbar { padding: 10px 22px; }
+}
+
+/* Folders become a row of chips above the joined pane. */
+@media (max-width: 900px) {
+  .kb-shell { grid-template-columns: minmax(0, 1fr); }
+  .kb-main { --rail-w: 240px; }
+  .kb-rail:first-child {
+    grid-column: 1 / -1;
+    position: static;
+    max-height: none;
+  }
+  .kb-rail:first-child .kb-list {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+  .kb-rail:first-child .kb-row {
+    width: auto;
+    flex-shrink: 0;
+    align-items: center;
+    border: 1px solid var(--border);
+    border-radius: var(--r-pill);
+  }
+  .kb-rail:first-child .kb-row-link { align-items: center; padding: 6px 4px 6px 12px; }
+  .kb-rail:first-child .kb-row-name { white-space: nowrap; }
+  .kb-rail:first-child .kb-row.on { border-color: var(--border-hover); }
+  .kb-rail:first-child .kb-dot { margin-top: 0; }
+  .kb-rail:first-child .kb-row-menu { opacity: 1; }
+}
+
+/* One column. The joined pane unstacks: the list sits above the page,
+   divided by a horizontal rule instead of a vertical one, and stops
+   being sticky since it no longer has a column to stay in. */
+@media (max-width: 680px) {
+  .kb-main {
+    --rail-w: 0px;                       /* stacked: the accent spans the top */
+    grid-template-columns: minmax(0, 1fr);
+    min-height: 0;
+  }
+  .kb-rail { position: static; max-height: none; }
+  .kb-rail-joined {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    border-radius: var(--r-card) var(--r-card) 0 0;
+  }
+  .kb-rail-inner { position: static; max-height: none; }
+  .kb-rail-joined .kb-list { max-height: 300px; }
+  .kb-doc { min-height: 420px; }
+  .kb-doc-title, .kb-title-input { font-size: 25px; }
+  .kb-doc-actions { gap: 6px; }
+  .kb-mention { width: calc(100vw - 32px); }
+}
+
+/* ---------------------------------------------------------
+   Print: the page, nothing else
+--------------------------------------------------------- */
+@media print {
+  #nav-mount, .kb-rail, .kb-doc-actions, .kb-toolbar,
+  .data-pill, .toast, .kb-mention, .kb-backlinks { display: none !important; }
+  .page-wide { max-width: none; padding: 0; }
+  .kb-shell { display: block; }
+  /* The rail is hidden, so the joined card has nothing to divide. */
+  .kb-main {
+    display: block;
+    border: 0;
+    min-height: 0;
+    background: none;
+  }
+  .kb-main::before { display: none; }        /* the accent hairline */
+  .kb-doc { border: 0; min-height: 0; }
+}

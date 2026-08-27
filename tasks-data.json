@@ -1,0 +1,149 @@
+{
+  "version": 1,
+  "updated": "2026-08-25T13:22:04.692Z",
+  "statuses": [
+    {
+      "id": "active",
+      "label": "Active",
+      "color": "#22d3ee"
+    },
+    {
+      "id": "pending",
+      "label": "Pending",
+      "color": "#f97316"
+    },
+    {
+      "id": "complete",
+      "label": "Complete",
+      "color": "#34d399"
+    },
+    {
+      "id": "canceled",
+      "label": "Canceled",
+      "color": "#56637d"
+    }
+  ],
+  "priorities": [
+    {
+      "id": "high",
+      "label": "High",
+      "color": "#f43f5e",
+      "rank": 1
+    },
+    {
+      "id": "medium",
+      "label": "Medium",
+      "color": "#fbbf24",
+      "rank": 2
+    },
+    {
+      "id": "low",
+      "label": "Low",
+      "color": "#56637d",
+      "rank": 3
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t-board",
+      "title": "Decide what the task dashboard shows",
+      "desc": "The board is the real screen. The dashboard needs a job of its own.",
+      "due": "2026-08-28",
+      "status": "active",
+      "priority": "high"
+    },
+    {
+      "id": "t-purge",
+      "title": "Purge the reading list",
+      "desc": "Half of it is three years old and two of them 404.",
+      "due": "2026-08-21",
+      "status": "active",
+      "priority": "medium"
+    },
+    {
+      "id": "t-nav",
+      "title": "Drop the mega menu on Links",
+      "desc": "One page in the section, so the panel was doing nothing.",
+      "due": "2026-08-23",
+      "status": "complete",
+      "priority": "low",
+      "completed": "2026-08-25T12:03:26.000Z"
+    },
+    {
+      "id": "t-newlink",
+      "title": "Wire New \u2192 Link",
+      "desc": "Should open the links page and the modal from anywhere on the site.",
+      "due": "2026-08-23",
+      "status": "complete",
+      "priority": "high",
+      "completed": "2026-08-22T12:03:26.000Z"
+    },
+    {
+      "id": "t-colors",
+      "title": "Pick a color for the canceled column",
+      "desc": "Rose reads as destructive. Faint gray might be closer to the truth.",
+      "due": "2026-08-26",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": "t-touch",
+      "title": "Test dragging on a phone",
+      "desc": "The grip handle is the only touch target that starts a drag. Check it feels right.",
+      "due": "2026-08-25",
+      "status": "complete",
+      "priority": "low",
+      "completed": "2026-08-11T12:03:26.000Z"
+    },
+    {
+      "id": "t-tags",
+      "title": "Add tags to tasks",
+      "desc": "Title, description, and a due date only goes so far.",
+      "due": "2026-08-27",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": "t-search",
+      "title": "Search across all three sections at once",
+      "desc": "One box in the nav that looks at links, demos, and tasks.",
+      "due": null,
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": "t-index",
+      "title": "Rebuild the home page from real counts",
+      "desc": "The numbers on the front page are still hard-coded.",
+      "due": "2026-09-04",
+      "status": "active",
+      "priority": "low"
+    },
+    {
+      "id": "t-sub",
+      "title": "Sub-tasks and checklists",
+      "desc": "Turned out to be a whole second data shape. Not now.",
+      "due": null,
+      "status": "canceled",
+      "priority": "high",
+      "completed": "2026-08-18T12:16:26.000Z"
+    },
+    {
+      "id": "t-notify",
+      "title": "Email reminders for overdue tasks",
+      "desc": "A static site has nowhere to send them from.",
+      "due": null,
+      "status": "canceled",
+      "priority": "medium",
+      "completed": "2026-07-17T12:16:26.000Z"
+    },
+    {
+      "id": "t-archive",
+      "title": "Archive completed tasks after 30 days",
+      "desc": "The complete column will get long otherwise.",
+      "due": "2026-09-11",
+      "status": "pending",
+      "priority": "low"
+    }
+  ]
+}

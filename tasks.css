@@ -1,0 +1,512 @@
+/* =========================================================
+   TASKS — dashboard and board
+   Loaded after site.css and site-nav.css. Uses existing tokens
+   only — nothing here overrides a design-system component.
+   ========================================================= */
+
+/* Several components below set `display`, which would otherwise
+   out-rank the browser's rule for [hidden]. */
+
+/* Four columns need more room than a reading column. */
+.page-wide { max-width: 1320px; }
+
+/* ---------------------------------------------------------
+   Shared page furniture
+--------------------------------------------------------- */
+.task-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+.task-head-left {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.task-head-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.task-head .label-caps { margin-bottom: 0; }
+.task-head .count-label { padding-bottom: 0; }
+.task-head .btn-primary { text-decoration: none; }
+
+/* Quiet button used inside pills and next to inputs. */
+
+/* Where the data currently stands. The dot is the only lit thing:
+   green when the file has everything, orange when it doesn't. */
+
+/* ---------------------------------------------------------
+   Due date reading. Only late and today get a color — a task
+   that's simply scheduled isn't news.
+--------------------------------------------------------- */
+.due-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-faint);
+  white-space: nowrap;
+}
+.due-chip svg { width: 13px; height: 13px; flex-shrink: 0; opacity: .8; }
+.due-chip.is-late { color: var(--accent-love); }
+.due-chip.is-now  { color: var(--accent-warn); }
+.due-chip.is-soon { color: var(--text-dim); }
+
+/* ---------------------------------------------------------
+   Dashboard
+--------------------------------------------------------- */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.stat-row .stat { padding: 18px 20px; }
+
+/* The count carries the column's color; the label stays quiet. */
+.stat-value-lit { color: var(--stat-color, var(--text-strong)); }
+
+.task-dash {
+  display: grid;
+  /* 1.75 puts the divider halfway through the third KPI tile above. */
+  grid-template-columns: minmax(0, 1.75fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+
+/* Now a link into the table view, which owns the task form. Underline
+   on hover only, so a list of ten doesn't read as ten underlines. */
+.attention-title {
+  color: var(--text-strong);
+  font-size: 15px;
+  font-weight: 500;
+  display: block;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color var(--t-fast), border-color var(--t-fast);
+}
+.attention-title:hover {
+  color: var(--accent-a);
+  border-bottom-color: color-mix(in srgb, var(--accent-a) 55%, transparent);
+}
+/* The border would otherwise run the full width of the cell. */
+.cell-primary .attention-title { display: inline-block; }
+
+.attention-title + .attention-desc { margin-top: 4px; }
+.attention-desc {
+  color: var(--text-faint);
+  font-size: 13px;
+  line-height: 1.5;
+  margin-top: 3px;
+  display: block;
+}
+
+/* One row per column: dot, label, count, and a bar for the share. */
+.split-list { display: grid; gap: 14px; margin: 4px 0 20px; }
+
+.split-row { display: grid; gap: 7px; }
+.split-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13.5px;
+}
+.split-top .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--dot-color);
+  box-shadow: 0 0 6px 1px var(--dot-color),
+              0 0 14px 3px color-mix(in srgb, var(--dot-color) 45%, transparent);
+}
+.split-label { flex: 1; color: var(--text-dim); font-weight: 500; }
+.split-count { color: var(--text-strong); font-weight: 600; }
+
+.split-bar {
+  height: 5px;
+  border-radius: 999px;
+  background: var(--bg-sunken);
+  overflow: hidden;
+}
+.split-bar span {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--dot-color);
+  transition: width var(--t-slow);
+}
+
+.dash-note {
+  color: var(--text-faint);
+  font-size: 12.5px;
+  line-height: 1.6;
+  margin: 0;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-soft);
+}
+
+/* ---------------------------------------------------------
+   Board
+--------------------------------------------------------- */
+.kanban {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+
+.kanban-col {
+  background: var(--bg-sunken);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r-card);
+  padding: 14px 12px 12px;
+  min-height: 180px;
+  transition: border-color var(--t), background var(--t);
+}
+/* The one lit thing during a drag: where the card will land. */
+.kanban-col.drop-target {
+  border-color: var(--accent-a);
+  background: #101a2e;
+  box-shadow: 0 0 0 1px var(--accent-a), 0 0 22px -6px var(--accent-a);
+}
+
+.col-head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 0 6px 12px;
+  margin-bottom: 2px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.col-head .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--col);
+  box-shadow: 0 0 6px 1px var(--col),
+              0 0 14px 3px color-mix(in srgb, var(--col) 45%, transparent);
+}
+.col-name {
+  flex: 1;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: .3px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.col-count {
+  color: var(--text-faint);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.col-body { display: grid; gap: 10px; padding-top: 12px; }
+
+.col-empty {
+  color: var(--text-faint);
+  font-size: 12.5px;
+  text-align: center;
+  padding: 20px 8px;
+  border: 1px dashed var(--border-soft);
+  border-radius: var(--r-pop);
+}
+
+/* ---- Card ---- */
+.task-card {
+  display: flex;
+  flex-direction: column;
+  padding: 15px 15px 13px;
+  cursor: pointer;
+  transition: border-color var(--t), background var(--t), opacity var(--t);
+}
+/* Top hairline carries the column color, same as a demo tile. */
+.task-card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--col);
+}
+.task-card:hover { border-color: var(--border-hover); background: #141d31; }
+
+/* The original stays put and dims while its ghost is being carried. */
+.task-card.dragging { opacity: .32; }
+
+.task-card-top {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.task-card-top .tag { margin: 0; }
+/* Pushes the grip back to the right now that the status tag and the
+   priority chip share the left. */
+.task-card-spacer { flex: 1; }
+
+/* The handle. Idle it's barely there; it lights on hover like
+   every other icon button on the site. */
+.task-grip {
+  flex-shrink: 0;
+  padding: 2px;
+  color: var(--icon-idle);
+  cursor: grab;
+  touch-action: none;          /* a drag here is a drag, not a scroll */
+}
+.task-grip:hover { color: var(--icon-hover); }
+.task-card.dragging .task-grip { cursor: grabbing; }
+
+.task-title {
+  font-family: var(--font-ui);
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--text-strong);
+  margin: 0 0 6px;
+}
+
+.task-desc {
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 0 0 12px;
+}
+.task-desc:empty { display: none; }
+
+.task-due {
+  margin: auto 0 0;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-soft);
+}
+.task-due:empty { display: none; }
+
+/* A finished card reads as settled rather than urgent. */
+.task-card.is-done .task-title { color: var(--text-dim); }
+.task-card.is-done .task-desc  { color: var(--text-faint); }
+
+/* ---- The thing you're actually carrying ---- */
+.task-ghost {
+  position: fixed;
+  z-index: 400;
+  pointer-events: none;
+  margin: 0;
+  cursor: grabbing;
+  box-shadow: var(--shadow-modal);
+  border-color: var(--border-hover);
+  transform: rotate(-1.2deg);
+}
+body.dragging-task { cursor: grabbing; user-select: none; }
+
+/* ---------------------------------------------------------
+   Modal
+--------------------------------------------------------- */
+.task-modal { max-width: 520px; }
+
+.input-area {
+  resize: vertical;
+  min-height: 76px;
+  line-height: 1.55;
+  font-family: inherit;
+}
+
+.due-field { display: flex; align-items: center; gap: 8px; }
+.input-date { flex: 1; min-width: 0; }
+.input-date::-webkit-calendar-picker-indicator { filter: invert(.65); cursor: pointer; }
+
+/* Column picker — the demo page's category picker, same shape. */
+.cat-option:has(.dot.on) .option-label { color: var(--text); }
+
+/* Destructive: quiet until it's armed, then it says what it'll do. */
+
+/* ---------------------------------------------------------
+   Small screens
+--------------------------------------------------------- */
+@media (max-width: 1000px) {
+  .task-dash { grid-template-columns: 1fr; }
+  .stat-row  { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 760px) {
+  /* Columns stay side by side and the board scrolls sideways —
+     stacking them would lose the one thing a board is for. */
+  .kanban {
+    display: flex;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
+    padding-bottom: 10px;
+    margin: 0 -18px;
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+  .kanban-col {
+    flex: 0 0 264px;
+    scroll-snap-align: start;
+  }
+}
+
+/* ---------------------------------------------------------
+   Priority
+
+   Filled rather than outlined, so it reads as a different kind of
+   fact from the status tag sitting next to it: the status says
+   which column, this says how much it matters.
+--------------------------------------------------------- */
+.pri-chip {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--pri) 45%, transparent);
+  background: color-mix(in srgb, var(--pri) 16%, transparent);
+  color: var(--pri);
+  font-family: var(--font-ui);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: .4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+/* A finished task's priority is history, so it stops shouting. */
+.task-card.is-done .pri-chip,
+.task-row.is-done .pri-chip { opacity: .5; }
+
+/* ---------------------------------------------------------
+   The table on All tasks
+--------------------------------------------------------- */
+.task-table td { vertical-align: top; }
+
+/* The title opens the task. A button, not a link — there's no URL
+   for a single task, and a button is what a dialog opener should be. */
+.task-row-title {
+  display: block;
+  padding: 0;
+  border: none;
+  background: none;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  text-align: left;
+  color: var(--text-strong);
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+  transition: color var(--t-fast), border-color var(--t-fast);
+}
+.task-row-title:hover {
+  color: var(--accent-a);
+  border-bottom-color: color-mix(in srgb, var(--accent-a) 55%, transparent);
+}
+
+.task-row-desc {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.5;
+}
+
+/* Completed and canceled rows step back without disappearing. */
+.task-row.is-done .task-row-title { color: var(--text-dim); }
+.task-row.is-done .task-row-desc { color: var(--text-faint); }
+
+.cell-none { color: var(--text-faint); }
+
+/* Delete arms in place, in the row menu as well as in the modal. */
+#rowMenu .menu-item.armed { color: var(--accent-love); }
+
+/* Also only written on the Links page, and the row menu here has a
+   destructive item too. */
+
+/* Off until the columns holding these facts fold away. */
+.task-inline-meta {
+  display: none;
+  margin-top: 6px;
+  color: var(--text-faint);
+  font-size: 12.5px;
+  font-weight: 400;
+}
+
+@media (max-width: 720px) {
+  /* Priority and column fold away rather than squeezing five columns
+     onto a phone; the inline line above carries them instead. */
+  .task-table thead th:nth-child(2),
+  .task-table thead th:nth-child(3),
+  .task-table tbody td:nth-child(2),
+  .task-table tbody td:nth-child(3) { display: none; }
+  .task-inline-meta { display: block; }
+}
+
+/* ---------------------------------------------------------
+   Filter dropdowns
+
+   Two things the base style in site.css doesn't cover.
+
+   First, the row here is a <button>, where Links and Scripts use a
+   <label> wrapping a hidden checkbox. site.css has no button reset, so
+   without this the browser's own button chrome shows through — a grey
+   fill, a border and centred text, which is exactly what these looked
+   like. Demos solves the same problem for its .cat-option rows; this is
+   that reset applied to the plain rows too.
+
+   Second, the label filling the width and the count sitting at the far
+   end were only ever written on the Links and Scripts pages, which the
+   task pages don't load.
+--------------------------------------------------------- */
+/* Lit rows read at full strength, the way a ticked category does. */
+
+/* ---------------------------------------------------------
+   Filter row actions
+
+   The buttons live on the filter row rather than up in the page
+   head, so the controls that change the table and the buttons that
+   act on it sit together. .filter-bar already spaces its children
+   apart, so this only needs to group them.
+--------------------------------------------------------- */
+.filter-bar-right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-shrink: 0;
+  flex-wrap: wrap;
+}
+
+/* The search box takes what the dropdowns leave. Capped, because the
+   right-hand group now carries the pill as well as both buttons and
+   shouldn't be squeezed off the row. */
+.filter-bar-left { flex: 1; min-width: 0; }
+.filter-bar-left .search-control { flex: 1; max-width: 300px; }
+
+/* An <a> wearing a button. Defined on the other pages that need it;
+   the task pages need it too, and they don't load those stylesheets. */
+
+@media (max-width: 720px) {
+  /* Stacked: the actions get their own line and stay right-aligned. */
+  .filter-bar-left { width: 100%; }
+  .filter-bar-left .search-control { max-width: none; }
+  .filter-bar-right { width: 100%; justify-content: flex-end; }
+}
+
+/* The "30d" marker beside a closed column's label, so a smaller number
+   there reads as a window rather than as work having vanished. */
+.split-window {
+  margin-left: 7px;
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--bg-sunken);
+  border: 1px solid var(--border-soft);
+  color: var(--text-faint);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  vertical-align: 1px;
+}

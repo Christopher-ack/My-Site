@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<title>Links — My Site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Design system + page styles, then the nav bar, then this page. -->
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site-nav.css">
+<link rel="stylesheet" href="links.css">
+</head>
+<body>
+
+<!-- The nav builds itself from site-nav.js. Same two lines on every page. -->
+<div id="nav-mount"></div>
+
+<div class="page">
+  <header class="page-header">
+    <h1>Links</h1>
+    <p class="tagline">Important links</p>
+  </header>
+
+  <!-- Favorites. Hidden until something is hearted, so the page opens
+       as a plain table and grows a shelf only when it's earned one. -->
+  <section class="fav-section" id="favSection" hidden>
+    <div class="fav-head">
+      <span class="label-caps">Favorites</span>
+      <span class="count-label" id="favCount"></span>
+    </div>
+    <div class="fav-grid" id="favGrid"></div>
+  </section>
+
+  <div class="link-head">
+    <div class="link-head-left">
+      <span class="label-caps">All links</span>
+      <span class="count-label" id="count"></span>
+    </div>
+
+    <div class="link-head-right">
+      <!-- Dot is lit only when the page and the file agree. -->
+      <div class="data-pill">
+        <span class="dot" id="dataDot"></span>
+        <span class="data-label" id="dataLabel">Loading…</span>
+        <button class="fmt-btn" type="button" id="downloadBtn">Download</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="filter-bar">
+    <div class="filter-bar-left">
+      <div class="popover-wrap">
+        <button class="control-btn" type="button" id="catBtn" aria-haspopup="true" aria-expanded="false">
+          <span id="catBtnLabel">Categories</span><span class="chevron"></span>
+        </button>
+        <div class="dropdown" id="catDrop"></div>
+      </div>
+
+      <div class="search-control">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" class="search-input" id="search" placeholder="Search title, URL, category…" autocomplete="off" />
+      </div>
+    </div>
+
+    <button class="btn-primary btn-small" type="button" id="addBtn">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      Add link
+    </button>
+  </div>
+
+  <div class="card card-accent">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:46%">
+            <button class="sort-header active" type="button" data-sort="title">Link<span class="sort-arrow"></span></button>
+          </th>
+          <th style="width:38%" class="col-hide-sm"><span class="header-label">Categories</span></th>
+          <th style="width:8%"></th>
+          <th style="width:8%"></th>
+        </tr>
+      </thead>
+      <tbody id="rows"></tbody>
+    </table>
+
+    <div class="empty-state" id="emptyState">
+      <strong>Nothing to show</strong>
+      <span>Clear the filters, or add your first link.</span>
+    </div>
+  </div>
+</div>
+
+<!-- One modal, reused by every row. Always opens in edit mode. -->
+<div class="modal-overlay" id="overlay">
+  <div class="modal-box modal-box-large link-modal" id="modalBox" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <h2 class="modal-title" id="modalTitle">Add link</h2>
+
+    <div class="field">
+      <label class="modal-label" for="fTitle">Title</label>
+      <input type="text" id="fTitle" class="input" placeholder="Name of the link" autocomplete="off" />
+    </div>
+
+    <div class="field">
+      <label class="modal-label" for="fUrl">URL</label>
+      <input type="url" id="fUrl" class="input" placeholder="https://" autocomplete="off" spellcheck="false" />
+    </div>
+
+    <div class="field">
+      <label class="modal-label">Categories</label>
+      <div class="option-grid" id="fCats"></div>
+      <div class="inline-add-row">
+        <input class="input input-small" type="text" id="fNewCat" placeholder="Add a new category…" autocomplete="off" />
+        <button class="btn btn-small" type="button" id="addCatBtn">Add</button>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="modal-label" for="fDesc">Description</label>
+      <input type="text" id="fDesc" class="input" placeholder="A short description of the linked resource" autocomplete="off" />
+    </div>
+
+    <div class="modal-toggle-row">
+      <div class="modal-toggle-item">
+        <button class="switch" type="button" role="switch" aria-checked="false" id="fFav"></button>
+        <span>Favorite</span>
+      </div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-danger" type="button" id="deleteBtn" hidden>Delete</button>
+      <span class="modal-actions-spacer"></span>
+      <button class="btn" type="button" id="cancelBtn">Cancel</button>
+      <button class="btn-primary" type="button" id="saveBtn">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- One menu panel, positioned in JS, reused by every row. -->
+<div class="menu-panel" id="rowMenu" role="menu" aria-label="Link actions">
+  <button class="menu-item" type="button" role="menuitem" data-act="edit">Edit</button>
+  <button class="menu-item" type="button" role="menuitem" data-act="open">Open in new tab</button>
+  <button class="menu-item" type="button" role="menuitem" data-act="copy">Copy URL</button>
+  <div class="menu-divider"></div>
+  <button class="menu-item" type="button" role="menuitem" data-act="fav">Add to favorites</button>
+</div>
+
+<!-- Save status toast -->
+<div class="toast" id="toast"><span class="toast-dot"></span><span id="toastText"></span></div>
+
+<script src="site-nav.js"></script>
+<script src="links.js"></script>
+</body>
+</html>

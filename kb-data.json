@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "updated": "2026-08-27T14:30:47.513Z",
+  "folders": [
+    {
+      "id": "f-competitors",
+      "label": "Competitors",
+      "color": "hsl(81, 70%, 60%)"
+    },
+    {
+      "id": "f-ignite",
+      "label": "Ignite",
+      "color": "hsl(38, 70%, 60%)"
+    },
+    {
+      "id": "f-my-site",
+      "label": "My Site",
+      "color": "hsl(139, 70%, 60%)"
+    },
+    {
+      "id": "f-personas",
+      "label": "Personas",
+      "color": "hsl(279, 70%, 60%)"
+    },
+    {
+      "id": "f-process",
+      "label": "Process",
+      "color": "hsl(223, 70%, 60%)"
+    },
+    {
+      "id": "f-rfps",
+      "label": "RFPs",
+      "color": "hsl(287, 70%, 60%)"
+    }
+  ],
+  "pages": [
+    {
+      "id": "pmta692aa",
+      "folder": "f-competitors",
+      "title": "Sage",
+      "body": "<a href=\"https://www.sage.com/en-us/products/sage-crm/\">https://www.sage.com/en-us/products/sage-crm/</a>",
+      "created": "2026-08-26T14:11:00.178Z",
+      "updated": "2026-08-26T14:11:08.192Z"
+    }
+  ]
+}

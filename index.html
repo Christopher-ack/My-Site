@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<title>My Site</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Design system, then the nav bar, then Tasks (this page borrows its
+     due chips, priority chips and stat tiles), then this page. -->
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="site-nav.css">
+<link rel="stylesheet" href="tasks.css">
+<link rel="stylesheet" href="home.css">
+</head>
+<body>
+
+<!-- The nav builds itself from site-nav.js. Same two lines on every page. -->
+<div id="nav-mount"></div>
+
+<div class="page page-wide">
+  <header class="page-header">
+    <h1>My Site</h1>
+    <p class="tagline">Everything you need in one place.</p>
+  </header>
+
+  <div class="home-head">
+    <div class="home-head-left">
+      <span class="label-caps">Overview</span>
+      <span class="count-label" id="asOf"></span>
+    </div>
+
+    <div class="home-head-right">
+      <!-- One dot per file this page reads, lit when that file loaded.
+           A section that's empty because its file is missing looks the
+           same as one that's genuinely empty, so this says which. -->
+      <div class="data-pill">
+        <span class="file-dots" id="fileDots"></span>
+        <button class="fmt-btn" type="button" id="downloadAll"
+                title="Download all data files as a backup">data files</button>
+        <span class="data-label is-warn" id="fileWarn" hidden></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Counts across the whole site, not just one section. -->
+  <div class="home-stats" id="stats"></div>
+
+  <div class="home-grid">
+
+    <!-- ---------- Main column ---------- -->
+    <div class="home-col">
+
+      <!-- Two windows on the same question: what's due. -->
+      <section class="card card-accent">
+        <div class="tabs">
+          <div class="tab-group" id="dueTabs" role="tablist">
+            <button class="tab active" type="button" role="tab" data-due="today"
+                    aria-selected="true">Today</button>
+            <button class="tab" type="button" role="tab" data-due="week"
+                    aria-selected="false">This week</button>
+          </div>
+          <span class="count-label" id="dueCount"></span>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:56%"><span class="header-label">Task</span></th>
+              <th style="width:22%" class="col-hide-sm"><span class="header-label">Status</span></th>
+              <th style="width:22%"><span class="header-label">Due</span></th>
+            </tr>
+          </thead>
+          <tbody id="dueRows"></tbody>
+        </table>
+        <div class="empty-state" id="dueEmpty">
+          <strong>Nothing due</strong>
+          <span>Nothing open lands in this window.</span>
+        </div>
+        <div class="card-foot">
+          <a href="tasks.html">Task dashboard →</a>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- ---------- Side column ---------- -->
+    <aside class="home-col">
+
+      <section class="card card-pad">
+        <div class="home-card-head">
+          <span class="label-caps">Favorite links</span>
+          <span class="count-label" id="linkCount"></span>
+        </div>
+        <div class="home-links" id="linkList"></div>
+        <div class="home-empty" id="linkEmpty" hidden>
+          Nothing hearted yet. Favorite a link and it turns up here.
+        </div>
+        <div class="card-foot">
+          <a href="links.html">All links →</a>
+        </div>
+      </section>
+
+      <section class="card card-pad">
+        <div class="home-card-head">
+          <span class="label-caps">Recent pages</span>
+          <span class="count-label" id="kbCount"></span>
+        </div>
+        <div class="home-list" id="kbList"></div>
+        <div class="home-empty" id="kbEmpty" hidden>
+          No pages yet. The Knowledge Base is where they go.
+        </div>
+        <div class="card-foot">
+          <a href="kb.html">Knowledge Base →</a>
+        </div>
+      </section>
+
+    </aside>
+
+  </div>
+</div>
+
+<script src="site-nav.js"></script>
+<script src="home.js"></script>
+</body>
+</html>

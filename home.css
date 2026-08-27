@@ -1,0 +1,250 @@
+/* =========================================================
+   HOME PAGE
+   Loaded after site.css, site-nav.css and tasks.css. Tasks
+   carries the due chips, the priority chips and the stat
+   tiles; this file adds the layout and the list rows.
+   ========================================================= */
+
+/* ---------------------------------------------------------
+   Head row
+--------------------------------------------------------- */
+.home-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+.home-head-left {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.home-head-left .label-caps { margin-bottom: 0; }
+.home-head-left .count-label { padding-bottom: 0; }
+.home-head-right { display: flex; align-items: center; gap: 10px; }
+
+/* One dot per file. Lit means it loaded. */
+.file-dots { display: inline-flex; align-items: center; gap: 5px; }
+.file-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #2a3650;
+  border: 1.5px solid #3a4a6b;
+}
+.file-dot.on {
+  background: var(--accent-b);
+  border-color: var(--accent-b);
+  box-shadow: 0 0 5px 1px var(--accent-b);
+}
+.data-label.is-warn { color: var(--accent-warn); }
+
+/* The pill's label is the download control now, so it reads as
+   something you can press rather than as a caption. */
+#downloadAll { color: var(--text-dim); }
+#downloadAll:hover { color: var(--accent-a); background: var(--bg-hover-soft); }
+#downloadAll:disabled { opacity: .5; cursor: not-allowed; }
+#downloadAll:disabled:hover { color: var(--text-dim); background: none; }
+
+/* ---------------------------------------------------------
+   Layout
+--------------------------------------------------------- */
+.home-stats {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 14px;
+}
+.home-stats .stat { padding: 18px 20px; }
+
+.home-grid {
+  display: grid;
+  /* The side cards hold short rows — a link title, a page name, a
+     timestamp — so they don't need the width the tables do. At 2.6 the
+     side column is ~347px on a 1320px page, leaving ~295px inside the
+     card padding, which is still comfortable for a title plus its
+     "2 days ago". */
+  grid-template-columns: minmax(0, 2.6fr) minmax(0, 1fr);
+  gap: 14px;
+  align-items: start;
+}
+/* Each column stacks its own cards, so the two sides can be
+   different heights without leaving a hole in the grid. */
+.home-col {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.home-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.home-card-head .label-caps { margin-bottom: 0; }
+.home-card-head .count-label { padding-bottom: 0; }
+
+/* Every card ends with a way into the section it summarises. */
+.card-foot {
+  border-top: 1px solid var(--border-soft);
+  padding: 12px 20px;
+  margin-top: auto;
+}
+.card-pad .card-foot { margin: 14px -20px -4px; }
+.card-foot a {
+  color: var(--accent-a);
+  font-size: 12.5px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.card-foot a:hover { text-decoration: underline; }
+
+.home-empty {
+  padding: 4px 0 8px;
+  color: var(--text-faint);
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+/* ---------------------------------------------------------
+   Task rows inside a card
+--------------------------------------------------------- */
+.home-task-title {
+  display: inline-block;
+  color: var(--text-strong);
+  font-size: 14.5px;
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color var(--t-fast), border-color var(--t-fast);
+}
+.home-task-title:hover {
+  color: var(--accent-a);
+  border-bottom-color: color-mix(in srgb, var(--accent-a) 55%, transparent);
+}
+.home-task-desc {
+  display: block;
+  margin-top: 3px;
+  color: var(--text-faint);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+
+/* ---------------------------------------------------------
+   Generic list row — pages, scripts
+--------------------------------------------------------- */
+.home-list { display: flex; flex-direction: column; }
+
+.home-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border-soft);
+  text-decoration: none;
+  transition: opacity var(--t-fast);
+}
+.home-row:last-child { border-bottom: none; }
+.home-row:hover .home-row-title { color: var(--accent-a); }
+
+.home-row-main { min-width: 0; }
+.home-row-title {
+  display: block;
+  color: var(--text-strong);
+  font-family: var(--font-ui);
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: color var(--t-fast);
+}
+.home-row-sub {
+  display: block;
+  margin-top: 3px;
+  color: var(--text-faint);
+  font-size: 12px;
+}
+.home-row-when {
+  flex-shrink: 0;
+  color: var(--text-faint);
+  font-size: 11.5px;
+  white-space: nowrap;
+}
+/* The folder's colour, small enough not to compete. */
+.home-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--dot-color);
+  vertical-align: 1px;
+}
+
+/* ---------------------------------------------------------
+   Favorite links
+--------------------------------------------------------- */
+.home-links { display: flex; flex-direction: column; gap: 8px; }
+
+/* A left edge in the first category's colour, so a list of six is
+   scannable without a tag on every row. */
+.home-link {
+  display: flex;
+  align-items: center;
+  padding: 9px 12px;
+  border: 1px solid var(--border-soft);
+  border-left: 2px solid var(--cat);
+  border-radius: var(--r-item);
+  background: var(--bg-sunken);
+  text-decoration: none;
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
+.home-link:hover {
+  background: var(--bg-hover);
+  border-color: var(--border-hover);
+  border-left-color: var(--cat);
+}
+.home-link-body { min-width: 0; }
+.home-link-title {
+  display: block;
+  color: var(--text-strong);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.home-link-host {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-faint);
+  font-size: 11.5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------------------------------------------------------
+   Narrower
+--------------------------------------------------------- */
+@media (max-width: 1180px) {
+  .home-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* Below this the side column starts squeezing its own rows, so it
+     takes a larger share back until the grid stacks at 900. */
+  .home-grid { grid-template-columns: minmax(0, 1.9fr) minmax(0, 1fr); }
+}
+
+@media (max-width: 900px) {
+  .home-grid { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .home-row { flex-wrap: wrap; }
+  .home-row-when { width: 100%; }
+}
